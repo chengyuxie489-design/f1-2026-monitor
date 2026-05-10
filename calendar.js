@@ -25,6 +25,7 @@ const f1CalendarRaces = [
   { round: 24, slug: "abu-dhabi", name: "阿布扎比大奖赛", city: "Abu Dhabi", country: "United Arab Emirates", date: "2026-12-06", lat: 24.4672, lon: 54.6031 }
 ];
 
+const earthTextureUrl = "https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/textures/land_ocean_ice_cloud_2048.jpg";
 let globeState = null;
 let liveCompletedHints = new Set();
 
@@ -66,47 +67,12 @@ async function syncCompletedCalendarRaces() {
   } catch {}
 }
 
-function createEarthTexture() {
-  const canvas = document.createElement("canvas");
-  canvas.width = 1024;
-  canvas.height = 512;
-  const ctx = canvas.getContext("2d");
-  const ocean = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-  ocean.addColorStop(0, "#12304a");
-  ocean.addColorStop(0.45, "#0b1d32");
-  ocean.addColorStop(1, "#07111f");
-  ctx.fillStyle = ocean;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.globalAlpha = 0.92;
-  ctx.fillStyle = "#2c795f";
-  [
-    [170, 160, 130, 52], [250, 214, 68, 34], [470, 154, 74, 42], [536, 220, 88, 50],
-    [650, 164, 82, 48], [720, 228, 76, 42], [820, 320, 54, 36], [300, 335, 58, 50]
-  ].forEach(([x, y, w, h]) => {
-    ctx.beginPath();
-    ctx.ellipse(x, y, w, h, -0.32, 0, Math.PI * 2);
-    ctx.fill();
+function loadEarthTexture() {
+  const texture = new THREE.TextureLoader().load(earthTextureUrl, () => {
+    if (globeState) globeState.renderer.render(globeState.scene, globeState.camera);
   });
-
-  ctx.globalAlpha = 0.42;
-  ctx.strokeStyle = "#86f7ff";
-  ctx.lineWidth = 1;
-  for (let y = 64; y < canvas.height; y += 64) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(canvas.width, y);
-    ctx.stroke();
-  }
-  for (let x = 0; x < canvas.width; x += 64) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, canvas.height);
-    ctx.stroke();
-  }
-
-  const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
+  texture.anisotropy = 8;
   return texture;
 }
 
@@ -118,6 +84,10 @@ function latLonToVector(lat, lon, radius = 2.05) {
     radius * Math.cos(phi),
     radius * Math.sin(phi) * Math.sin(theta)
   );
+}
+
+function frontRotationForLongitude(lon) {
+  return -lon * Math.PI / 180 - Math.PI / 2;
 }
 
 function initGlobe() {
@@ -138,8 +108,8 @@ function initGlobe() {
   scene.add(earthGroup, markerGroup);
 
   earthGroup.add(new THREE.Mesh(
-    new THREE.SphereGeometry(2, 96, 96),
-    new THREE.MeshStandardMaterial({ map: createEarthTexture(), color: "#f7fbff", roughness: 0.92, metalness: 0.08 })
+    new THREE.SphereGeometry(2, 128, 128),
+    new THREE.MeshStandardMaterial({ map: loadEarthTexture(), color: "#f7fbff", roughness: 0.96, metalness: 0.02 })
   ));
   earthGroup.add(new THREE.Mesh(
     new THREE.SphereGeometry(2.08, 96, 96),
@@ -147,18 +117,20 @@ function initGlobe() {
   ));
   earthGroup.add(new THREE.Mesh(
     new THREE.SphereGeometry(2.012, 48, 24),
-    new THREE.MeshBasicMaterial({ color: "#ffffff", wireframe: true, transparent: true, opacity: 0.055 })
+    new THREE.MeshBasicMaterial({ color: "#ffffff", wireframe: true, transparent: true, opacity: 0.038 })
   ));
 
-  scene.add(new THREE.AmbientLight("#9fc7ff", 1.35));
-  const key = new THREE.DirectionalLight("#ffffff", 2.2);
+  scene.add(new THREE.AmbientLight("#9fc7ff", 1.18));
+  const key = new THREE.DirectionalLight("#ffffff", 2.35);
   key.position.set(4, 3, 6);
   scene.add(key);
-  const rim = new THREE.DirectionalLight("#31d0aa", 1.25);
+  const rim = new THREE.DirectionalLight("#31d0aa", 1.2);
   rim.position.set(-5, -1, -2);
   scene.add(rim);
 
   globeState = { renderer, scene, camera, earthGroup, markerGroup, labelLayer, stage, labels: [], drag: { active: false, x: 0, y: 0 } };
+  earthGroup.rotation.y = frontRotationForLongitude(103);
+  markerGroup.rotation.copy(earthGroup.rotation);
 
   stage.addEventListener("pointerdown", (event) => {
     globeState.drag = { active: true, x: event.clientX, y: event.clientY };
@@ -225,7 +197,7 @@ function updateGlobeMarkers() {
 
 function focusGlobeRace(race) {
   if (!globeState) return;
-  globeState.earthGroup.rotation.y = -(race.lon + 180) * Math.PI / 180;
+  globeState.earthGroup.rotation.y = frontRotationForLongitude(race.lon);
   globeState.earthGroup.rotation.x = Math.max(-0.72, Math.min(0.72, (race.lat * Math.PI / 180) * 0.55));
   globeState.markerGroup.rotation.copy(globeState.earthGroup.rotation);
 }
@@ -252,7 +224,7 @@ function animateGlobe() {
   if (!globeState) return;
   requestAnimationFrame(animateGlobe);
   if (document.body.dataset.mode === "calendar" && !globeState.drag.active) {
-    globeState.earthGroup.rotation.y += 0.0014;
+    globeState.earthGroup.rotation.y += 0.0012;
     globeState.markerGroup.rotation.copy(globeState.earthGroup.rotation);
   }
   updateGlobeLabels();
