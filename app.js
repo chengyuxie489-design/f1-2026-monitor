@@ -279,12 +279,8 @@ const els = {
   raceDetails: document.querySelectorAll(".race-detail"),
   standingsSection: document.querySelector("#standings-section"),
   standingsGrid: document.querySelector("#standings-grid"),
-  standingsLeader: document.querySelector("#standings-leader"),
-  standingsMeta: document.querySelector("#standings-meta"),
   constructorsSection: document.querySelector("#constructors-section"),
   constructorsGrid: document.querySelector("#constructors-grid"),
-  constructorsLeader: document.querySelector("#constructors-leader"),
-  constructorsMeta: document.querySelector("#constructors-meta"),
   statusText: document.querySelector("#status-text"),
   statusDot: document.querySelector(".status-dot"),
   refreshButton: document.querySelector("#refresh-button"),
@@ -555,25 +551,13 @@ function renderTable() {
 
 function renderStandings() {
   const rows = standings.length ? standings : buildFallbackStandings();
-  const leader = rows[0];
   const maxPoints = Math.max(...rows.map((entry) => Number(entry.points) || 0), 1);
-  const updated = dataStatus.updatedAt
-    ? new Date(dataStatus.updatedAt).toLocaleString("zh-CN", { hour12: false })
-    : "离线缓存";
 
-  els.standingsMeta.textContent = `按已完成的 ${races.length} 个大奖赛周和冲刺赛积分汇总 · ${updated}`;
-
-  if (!leader) {
-    els.standingsLeader.innerHTML = `<span>当前领先</span><strong>暂无数据</strong><small>等待 OpenF1 更新。</small>`;
+  if (!rows.length) {
     els.standingsGrid.innerHTML = `<div class="empty-state">积分榜正在同步。</div>`;
     return;
   }
 
-  els.standingsLeader.innerHTML = `
-    <span>当前领先</span>
-    <strong>${safeText(leader.driver)}</strong>
-    <small>${safeText(leader.team)} · ${safeText(leader.points)} 分 · ${safeText(leader.wins)} 个大奖赛胜场</small>
-  `;
   els.standingsGrid.innerHTML = rows
     .map((entry) => {
       const score = Math.round(((Number(entry.points) || 0) / maxPoints) * 100);
@@ -599,25 +583,13 @@ function renderStandings() {
 
 function renderConstructorStandings() {
   const rows = constructorStandings.length ? constructorStandings : buildFallbackConstructorStandings();
-  const leader = rows[0];
   const maxPoints = Math.max(...rows.map((entry) => Number(entry.points) || 0), 1);
-  const updated = dataStatus.updatedAt
-    ? new Date(dataStatus.updatedAt).toLocaleString("zh-CN", { hour12: false })
-    : "离线缓存";
 
-  els.constructorsMeta.textContent = `按已完成的 ${races.length} 个大奖赛周和冲刺赛积分汇总 · ${updated}`;
-
-  if (!leader) {
-    els.constructorsLeader.innerHTML = `<span>当前领先车队</span><strong>暂无数据</strong><small>等待 OpenF1 更新。</small>`;
+  if (!rows.length) {
     els.constructorsGrid.innerHTML = `<div class="empty-state">车队积分榜正在同步。</div>`;
     return;
   }
 
-  els.constructorsLeader.innerHTML = `
-    <span>当前领先车队</span>
-    <strong>${safeText(leader.team)}</strong>
-    <small>${safeText(leader.points)} 分 · ${safeText(leader.wins)} 胜 · ${safeText(leader.podiums)} 个领奖台</small>
-  `;
   els.constructorsGrid.innerHTML = rows
     .map((entry) => {
       const drivers = Array.isArray(entry.drivers) ? entry.drivers.join(" / ") : "";
