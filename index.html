@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./calendar.css" />
   </head>
   <body>
     <header class="topbar">
@@ -42,6 +43,10 @@
           <button class="mode-button" type="button" data-mode="constructors">
             <span class="mode-index">03</span>
             <span>车队积分</span>
+          </button>
+          <button class="mode-button" type="button" data-mode="calendar">
+            <span class="mode-index">04</span>
+            <span>赛历视界</span>
           </button>
         </div>
         <div class="rail-head">
@@ -140,6 +145,23 @@
         <section class="standings-section constructors-section" id="constructors-section" hidden>
           <div id="constructors-grid" class="standings-grid constructors-grid"></div>
         </section>
+
+        <section class="calendar-section" id="calendar-section" hidden>
+          <div class="globe-stage" id="globe-stage">
+            <canvas id="globe-canvas" aria-label="2026 F1 赛历交互地球"></canvas>
+            <div class="globe-label-layer" id="globe-label-layer" aria-hidden="true"></div>
+            <div class="globe-hud">
+              <p class="eyebrow">F1 2026 Race Atlas</p>
+              <h2>赛历视界</h2>
+              <p>拖动地球查看全年大奖赛举办地，已完赛站点以金色显示，待举行站点以蓝色显示。</p>
+              <div class="globe-legend">
+                <span><i class="done"></i>已完赛</span>
+                <span><i class="future"></i>待举行</span>
+              </div>
+            </div>
+          </div>
+          <div class="calendar-strip" id="calendar-strip"></div>
+        </section>
       </section>
     </main>
 
@@ -147,6 +169,8 @@
       数据由 OpenF1 实时源自动同步，页面会在后台定时刷新并保留最近一次可用快照。
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
     <script src="./app.js"></script>
+    <script src="./calendar.js"></script>
   </body>
 </html>
