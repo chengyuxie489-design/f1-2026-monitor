@@ -59,12 +59,7 @@ const localProfiles = {
     image: "https://commons.wikimedia.org/wiki/Special:FilePath/Melbourne%20skyline%20-%20Albert%20Park.jpg",
     track: "M46 118 C66 65 108 35 155 52 C198 68 246 44 270 78 C292 110 254 143 209 134 C172 127 154 156 113 146 C78 137 42 151 46 118",
     start: [46, 118],
-    facts: [
-      ["城市气质", "湖畔街道赛", "阿尔伯特公园把城市天际线、湖面和临时围场揉在一起。"],
-      ["当地节奏", "早春揭幕", "南半球初秋，天气切换快，长距离轮胎窗口更敏感。"],
-      ["赛道性格", "流动高速", "改造后的 Albert Park 更强调高速弯衔接和 DRS 攻防。"],
-      ["观赛记忆", "St Kilda 海风", "赛后人流常向海边、咖啡馆和市中心扩散。"]
-    ]
+    facts: [["城市气质", "湖畔街道赛", "Albert Park 把城市天际线、湖面和临时围场揉在一起。"]]
   },
   Shanghai: {
     title: "上海 · 嘉定速度场",
@@ -74,12 +69,7 @@ const localProfiles = {
     image: "https://commons.wikimedia.org/wiki/Special:FilePath/F-1%20Circuit%20Shanghai%20-%20panoramio.jpg",
     track: "M64 100 C68 50 135 45 150 86 C164 130 225 118 256 84 C283 58 303 94 277 126 C242 166 150 151 105 146 C70 143 44 126 64 100",
     start: [64, 100],
-    facts: [
-      ["城市气质", "都市北翼", "嘉定赛车场连接地铁、产业园区和上海周末观赛人潮。"],
-      ["当地节奏", "春季冲刺周", "短练习直接进入冲刺排位，车队更早暴露调校取舍。"],
-      ["赛道性格", "上字长弯", "1-2 号弯持续横向负载，对前胎温度和入弯耐心很挑剔。"],
-      ["观赛记忆", "看台红海", "主看台视野开阔，长直道尾端是超车判断的关键点。"]
-    ]
+    facts: [["城市气质", "都市北翼", "嘉定赛车场连接地铁、产业园区和上海周末观赛人潮。"]]
   },
   Suzuka: {
     title: "铃鹿 · 山林技术课",
@@ -89,12 +79,7 @@ const localProfiles = {
     image: "https://commons.wikimedia.org/wiki/Special:FilePath/Suzuka%20Circuit%20Main%20Straight.jpg",
     track: "M42 96 C78 46 120 54 142 89 C164 125 206 77 245 55 C284 35 300 86 265 111 C227 137 191 124 167 150 C141 179 82 161 59 133 C46 119 34 111 42 96",
     start: [42, 96],
-    facts: [
-      ["城市气质", "本田主场", "三重县的赛车文化扎根很深，围场外就是游乐园和家庭观赛氛围。"],
-      ["当地节奏", "春季日本站", "樱花季前后天气清爽，风向变化会影响 S 弯和 130R 的信心。"],
-      ["赛道性格", "八字交叉", "世界少见的立体交叉布局，连续弯要求底盘平衡极高。"],
-      ["观赛记忆", "S 弯层次", "看车手一口气切过蛇形弯，是铃鹿最有辨识度的画面。"]
-    ]
+    facts: [["城市气质", "本田主场", "八字交叉布局与连续弯让铃鹿始终带着清晰的技术性。"]]
   },
   Miami: {
     title: "迈阿密 · 海岸娱乐周",
@@ -104,32 +89,14 @@ const localProfiles = {
     image: "https://commons.wikimedia.org/wiki/Special:FilePath/Miami%20skyline%20%281%29.jpg",
     track: "M36 104 C60 64 98 54 132 73 C164 91 194 68 224 62 C261 55 297 82 280 116 C262 153 205 143 175 126 C144 108 126 153 84 148 C52 145 25 130 36 104",
     start: [36, 104],
-    facts: [
-      ["城市气质", "体育场街区", "围绕 Hard Rock Stadium 搭建的临时赛道，派对感很强。"],
-      ["当地节奏", "热带湿热", "高温与赛道演进快，安全车窗口和轮胎衰退都更容易搅局。"],
-      ["赛道性格", "慢弯牵引", "中低速组合多，出弯牵引和制动稳定性直接决定长直道机会。"],
-      ["观赛记忆", "粉蓝霓虹", "海滩色彩、音乐和夜生活让这一站更像一整个城市活动。"]
-    ]
+    facts: [["城市气质", "体育场街区", "围绕 Hard Rock Stadium 搭建的临时赛道，派对感很强。"]]
   }
 };
 
-function genericProfile(session) {
-  return {
-    title: `${session.location} · 当地赛周`,
-    kicker: session.circuit_short_name,
-    accent: "#f03638",
-    accent2: "#31d0aa",
-    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80",
-    track: "M44 98 C70 52 126 42 164 70 C195 93 228 54 268 78 C302 98 282 144 239 144 C193 144 180 120 144 142 C104 166 32 144 44 98",
-    start: [44, 98],
-    facts: [
-      ["城市气质", session.location, `${session.country_name} 赛周，页面会随 OpenF1 数据自动补齐最新结果。`],
-      ["当地时间", `UTC${session.gmt_offset.slice(0, 6)}`, "比赛时间来自 OpenF1 session 元数据。"],
-      ["赛道性格", session.circuit_short_name, "新分站先使用通用赛道画像，可继续补充专属地点文案。"],
-      ["数据状态", "实时同步", "正赛、最快圈与冲刺赛结果由后台定时更新。"]
-    ]
-  };
-}
+let currentPayload = null;
+let refreshPromise = null;
+let lastSyncError = null;
+let nextUpdateAt = null;
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -141,34 +108,42 @@ async function fetchJson(url, options = {}) {
   if (cached && Date.now() - cached.time < cacheMs) return cached.data;
 
   let lastError;
-  for (let attempt = 0; attempt <= 3; attempt++) {
-    const response = await fetch(url, {
-      headers: { "User-Agent": "f1-2026-monitor/1.0" }
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      apiCache.set(url, { time: Date.now(), data });
-      return data;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(options.timeoutMs || 20000),
+        headers: { "User-Agent": "f1-2026-monitor/1.1" }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        apiCache.set(url, { time: Date.now(), data });
+        return data;
+      }
+      lastError = new Error(`${response.status} ${response.statusText}: ${url}`);
+    } catch (error) {
+      lastError = error;
     }
-
-    lastError = new Error(`${response.status} ${response.statusText}: ${url}`);
-    if (response.status !== 429 || attempt === 3) break;
-    await sleep(1500 * (attempt + 1));
+    await sleep(600 * (attempt + 1));
   }
 
+  if (cached?.data) return cached.data;
   throw lastError;
+}
+
+function driverName(driver) {
+  return `${driver?.first_name || ""} ${driver?.last_name || ""}`.trim() || driver?.full_name || String(driver?.driver_number || "");
+}
+
+function cleanTeamColor(color) {
+  return String(color || "909090").replace(/^#/, "").slice(0, 6) || "909090";
 }
 
 function secondsToRaceTime(seconds) {
   if (seconds == null || Number.isNaN(Number(seconds))) return "";
   const ms = Math.round(Number(seconds) * 1000);
-  const hours = Math.floor(ms / 3600000);
-  const minutes = Math.floor((ms % 3600000) / 60000);
+  const minutes = Math.floor(ms / 60000);
   const secs = Math.floor((ms % 60000) / 1000);
-  const millis = String(ms % 1000).padStart(3, "0");
-  if (hours > 0) return `${hours}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}.${millis}`;
-  return `${minutes}:${String(secs).padStart(2, "0")}.${millis}`;
+  return `${minutes}:${String(secs).padStart(2, "0")}.${String(ms % 1000).padStart(3, "0")}`;
 }
 
 function formatGap(result, winnerDuration) {
@@ -182,59 +157,16 @@ function formatGap(result, winnerDuration) {
   return "";
 }
 
-function driverName(driver) {
-  return `${driver.first_name || ""} ${driver.last_name || ""}`.trim() || driver.full_name || String(driver.driver_number);
-}
-
-function cleanTeamColor(color) {
-  return String(color || "909090").replace(/^#/, "").slice(0, 6) || "909090";
-}
-
 function normalizeRows(results, drivers) {
   const driverMap = new Map(drivers.map((driver) => [driver.driver_number, driver]));
-  const winner = results.find((result) => result.position === 1);
-  const winnerDuration = winner?.duration;
-
+  const winnerDuration = results.find((result) => result.position === 1)?.duration;
   return results
     .slice()
     .sort((a, b) => (a.position ?? 999) - (b.position ?? 999))
     .map((result) => {
       const driver = driverMap.get(result.driver_number) || {};
       const status = result.dns ? "DNS" : result.dnf ? "DNF" : result.dsq ? "DSQ" : result.position ?? "NC";
-      return [
-        String(status),
-        driverName(driver),
-        driver.team_name || "-",
-        String(result.number_of_laps ?? 0),
-        formatGap(result, winnerDuration),
-        String(Number(result.points || 0))
-      ];
-    });
-}
-
-async function fastestLaps(sessionKey, drivers) {
-  const driverMap = new Map(drivers.map((driver) => [driver.driver_number, driver]));
-  const laps = await fetchJson(`${openF1}/laps?session_key=${sessionKey}`);
-  const bestByDriver = new Map();
-
-  for (const lap of laps) {
-    if (!lap.lap_duration || lap.is_pit_out_lap) continue;
-    const current = bestByDriver.get(lap.driver_number);
-    if (!current || lap.lap_duration < current.lap_duration) bestByDriver.set(lap.driver_number, lap);
-  }
-
-  return Array.from(bestByDriver.values())
-    .sort((a, b) => a.lap_duration - b.lap_duration)
-    .slice(0, 5)
-    .map((lap, index) => {
-      const driver = driverMap.get(lap.driver_number) || {};
-      return [
-        String(index + 1),
-        driverName(driver),
-        driver.team_name || "-",
-        secondsToRaceTime(lap.lap_duration),
-        String(lap.lap_number)
-      ];
+      return [String(status), driverName(driver), driver.team_name || "-", String(result.number_of_laps ?? 0), formatGap(result, winnerDuration), String(Number(result.points || 0))];
     });
 }
 
@@ -243,44 +175,50 @@ async function sessionRows(sessionKey) {
     fetchJson(`${openF1}/session_result?session_key=${sessionKey}`),
     fetchJson(`${openF1}/drivers?session_key=${sessionKey}`)
   ]);
+  return { results, drivers, rows: normalizeRows(results, drivers) };
+}
 
+async function fastestLaps(sessionKey, drivers) {
+  try {
+    const laps = await fetchJson(`${openF1}/laps?session_key=${sessionKey}`, { cacheMs: 120000 });
+    const driverMap = new Map(drivers.map((driver) => [driver.driver_number, driver]));
+    const bestByDriver = new Map();
+    for (const lap of laps) {
+      if (!lap.lap_duration || lap.is_pit_out_lap) continue;
+      const current = bestByDriver.get(lap.driver_number);
+      if (!current || lap.lap_duration < current.lap_duration) bestByDriver.set(lap.driver_number, lap);
+    }
+    return Array.from(bestByDriver.values()).sort((a, b) => a.lap_duration - b.lap_duration).slice(0, 5).map((lap, index) => {
+      const driver = driverMap.get(lap.driver_number) || {};
+      return [String(index + 1), driverName(driver), driver.team_name || "-", secondsToRaceTime(lap.lap_duration), String(lap.lap_number)];
+    });
+  } catch {
+    return [];
+  }
+}
+
+function genericProfile(session) {
   return {
-    results,
-    drivers,
-    rows: normalizeRows(results, drivers)
+    title: `${session.location} · 当地赛周`,
+    kicker: session.circuit_short_name,
+    accent: "#f03638",
+    accent2: "#31d0aa",
+    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80",
+    track: "M44 98 C70 52 126 42 164 70 C195 93 228 54 268 78 C302 98 282 144 239 144 C193 144 180 120 144 142 C104 166 32 144 44 98",
+    start: [44, 98],
+    facts: [["数据状态", "实时同步", "比赛结果由 OpenF1 定时更新；网络波动时会保留最近一次可用快照。"]]
   };
 }
 
 async function buildRace(session, index, sprintSessions) {
   const raceData = await sessionRows(session.session_key);
   const sprintSession = sprintSessions.find((item) => item.meeting_key === session.meeting_key);
-  let sprintData = null;
-  let sprintResult = [];
-
-  if (sprintSession) {
-    try {
-      sprintData = await sessionRows(sprintSession.session_key);
-      sprintResult = sprintData.rows;
-    } catch (error) {
-      console.warn(`Sprint result unavailable for ${session.location}: ${error.message}`);
-    }
-  }
-
-  let fastest = [];
-  try {
-    fastest = await fastestLaps(session.session_key, raceData.drivers);
-  } catch (error) {
-    console.warn(`Fastest laps unavailable for ${session.location}: ${error.message}`);
-  }
-
+  const [fastest, sprintData] = await Promise.all([
+    fastestLaps(session.session_key, raceData.drivers),
+    sprintSession ? sessionRows(sprintSession.session_key).catch(() => null) : null
+  ]);
   const profile = localProfiles[session.circuit_short_name] || genericProfile(session);
-  const date = new Intl.DateTimeFormat("zh-CN", {
-    timeZone: "UTC",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit"
-  }).format(new Date(session.date_start));
-
+  const date = new Intl.DateTimeFormat("zh-CN", { timeZone: "UTC", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(session.date_start));
   const winner = raceData.rows[0]?.[1] || "待确认";
   const second = raceData.rows[1]?.[1] || "第二名";
   const third = raceData.rows[2]?.[1] || "第三名";
@@ -304,7 +242,7 @@ async function buildRace(session, index, sprintSessions) {
     start: profile.start,
     race: raceData.rows,
     fastest,
-    sprintResult,
+    sprintResult: sprintData?.rows || [],
     standingsSource: {
       race: raceData.results,
       raceDrivers: raceData.drivers,
@@ -331,12 +269,10 @@ function addResultToStandings(table, result, driver, sessionType) {
     racePoints: 0,
     sprintPoints: 0
   };
-
   const points = Number(result.points || 0);
   current.points += points;
   if (sessionType === "sprint") current.sprintPoints += points;
   else current.racePoints += points;
-
   if (sessionType === "race" && result.position === 1) current.wins += 1;
   if (sessionType === "race" && [1, 2, 3].includes(result.position)) current.podiums += 1;
   current.team = driver.team_name || current.team;
@@ -345,54 +281,14 @@ function addResultToStandings(table, result, driver, sessionType) {
   table.set(key, current);
 }
 
-function buildStandings(races) {
-  const table = new Map();
-
-  for (const race of races) {
-    const raceDrivers = new Map((race.standingsSource?.raceDrivers || []).map((driver) => [driver.driver_number, driver]));
-    const sprintDrivers = new Map((race.standingsSource?.sprintDrivers || []).map((driver) => [driver.driver_number, driver]));
-
-    for (const result of race.standingsSource?.race || []) {
-      addResultToStandings(table, result, raceDrivers.get(result.driver_number), "race");
-    }
-
-    for (const result of race.standingsSource?.sprint || []) {
-      addResultToStandings(table, result, sprintDrivers.get(result.driver_number), "sprint");
-    }
-
-  }
-
-  return Array.from(table.values())
-    .sort((a, b) => b.points - a.points || b.wins - a.wins || b.podiums - a.podiums || a.driver.localeCompare(b.driver))
-    .map((entry, index) => ({
-      ...entry,
-      position: index + 1,
-      points: Number(entry.points.toFixed(1)),
-      racePoints: Number(entry.racePoints.toFixed(1)),
-      sprintPoints: Number(entry.sprintPoints.toFixed(1))
-    }));
-}
-
 function addResultToConstructors(table, result, driver, sessionType) {
   if (!driver) return;
   const team = driver.team_name || "Unknown";
-  const current = table.get(team) || {
-    position: 0,
-    team,
-    teamColor: cleanTeamColor(driver.team_colour),
-    points: 0,
-    wins: 0,
-    podiums: 0,
-    racePoints: 0,
-    sprintPoints: 0,
-    drivers: new Set()
-  };
-
+  const current = table.get(team) || { position: 0, team, teamColor: cleanTeamColor(driver.team_colour), points: 0, wins: 0, podiums: 0, racePoints: 0, sprintPoints: 0, drivers: new Set() };
   const points = Number(result.points || 0);
   current.points += points;
   if (sessionType === "sprint") current.sprintPoints += points;
   else current.racePoints += points;
-
   if (sessionType === "race" && result.position === 1) current.wins += 1;
   if (sessionType === "race" && [1, 2, 3].includes(result.position)) current.podiums += 1;
   current.teamColor = cleanTeamColor(driver.team_colour || current.teamColor);
@@ -400,84 +296,117 @@ function addResultToConstructors(table, result, driver, sessionType) {
   table.set(team, current);
 }
 
-function buildConstructorStandings(races) {
-  const table = new Map();
-
+function buildStandings(races) {
+  const drivers = new Map();
+  const teams = new Map();
   for (const race of races) {
     const raceDrivers = new Map((race.standingsSource?.raceDrivers || []).map((driver) => [driver.driver_number, driver]));
     const sprintDrivers = new Map((race.standingsSource?.sprintDrivers || []).map((driver) => [driver.driver_number, driver]));
-
     for (const result of race.standingsSource?.race || []) {
-      addResultToConstructors(table, result, raceDrivers.get(result.driver_number), "race");
+      addResultToStandings(drivers, result, raceDrivers.get(result.driver_number), "race");
+      addResultToConstructors(teams, result, raceDrivers.get(result.driver_number), "race");
     }
-
     for (const result of race.standingsSource?.sprint || []) {
-      addResultToConstructors(table, result, sprintDrivers.get(result.driver_number), "sprint");
+      addResultToStandings(drivers, result, sprintDrivers.get(result.driver_number), "sprint");
+      addResultToConstructors(teams, result, sprintDrivers.get(result.driver_number), "sprint");
     }
   }
+  const standings = Array.from(drivers.values()).sort((a, b) => b.points - a.points || b.wins - a.wins || b.podiums - a.podiums || a.driver.localeCompare(b.driver)).map((entry, index) => ({ ...entry, position: index + 1, points: Number(entry.points.toFixed(1)), racePoints: Number(entry.racePoints.toFixed(1)), sprintPoints: Number(entry.sprintPoints.toFixed(1)) }));
+  const constructorStandings = Array.from(teams.values()).sort((a, b) => b.points - a.points || b.wins - a.wins || b.podiums - a.podiums || a.team.localeCompare(b.team)).map((entry, index) => ({ ...entry, position: index + 1, points: Number(entry.points.toFixed(1)), racePoints: Number(entry.racePoints.toFixed(1)), sprintPoints: Number(entry.sprintPoints.toFixed(1)), drivers: Array.from(entry.drivers).sort() }));
+  return { standings, constructorStandings };
+}
 
-  return Array.from(table.values())
-    .sort((a, b) => b.points - a.points || b.wins - a.wins || b.podiums - a.podiums || a.team.localeCompare(b.team))
-    .map((entry, index) => ({
-      ...entry,
-      position: index + 1,
-      points: Number(entry.points.toFixed(1)),
-      racePoints: Number(entry.racePoints.toFixed(1)),
-      sprintPoints: Number(entry.sprintPoints.toFixed(1)),
-      drivers: Array.from(entry.drivers).sort()
-    }));
+function usablePayload(payload) {
+  return Boolean(payload && Array.isArray(payload.races) && payload.races.length);
+}
+
+function annotate(payload, metadata = {}) {
+  const updatedTime = payload?.updatedAt ? new Date(payload.updatedAt).getTime() : NaN;
+  return {
+    source: payload?.source || "OpenF1 warming",
+    updatedAt: payload?.updatedAt || null,
+    races: payload?.races || [],
+    standings: payload?.standings || [],
+    constructorStandings: payload?.constructorStandings || [],
+    syncStatus: metadata.syncStatus || payload?.syncStatus || "live",
+    stale: metadata.stale ?? payload?.stale ?? false,
+    lastSyncError: metadata.lastSyncError ?? payload?.lastSyncError ?? null,
+    nextUpdateAt,
+    cacheAgeMs: Number.isFinite(updatedTime) ? Math.max(0, Date.now() - updatedTime) : null
+  };
+}
+
+async function readCache() {
+  if (!existsSync(cacheFile)) return null;
+  try {
+    const payload = JSON.parse(await fs.readFile(cacheFile, "utf8"));
+    return usablePayload(payload) ? payload : null;
+  } catch (error) {
+    console.warn(`[sync] cache read failed: ${error.message}`);
+    return null;
+  }
+}
+
+async function writeCache(payload) {
+  await fs.mkdir(cacheDir, { recursive: true });
+  await fs.writeFile(cacheFile, JSON.stringify(payload, null, 2), "utf8");
 }
 
 async function refreshData() {
   const now = Date.now();
   const [raceSessions, sprintSessions] = await Promise.all([
-    fetchJson(`${openF1}/sessions?year=2026&session_name=Race`),
-    fetchJson(`${openF1}/sessions?year=2026&session_name=Sprint`)
+    fetchJson(`${openF1}/sessions?year=2026&session_name=Race`, { cacheMs: 120000 }),
+    fetchJson(`${openF1}/sessions?year=2026&session_name=Sprint`, { cacheMs: 120000 })
   ]);
 
-  const completedRaceSessions = [];
-  for (const session of raceSessions) {
-    if (session.is_cancelled || new Date(session.date_end || session.date_start).getTime() > now) continue;
-    const results = await fetchJson(`${openF1}/session_result?session_key=${session.session_key}`);
-    if (results.some((result) => result.position === 1)) completedRaceSessions.push(session);
-  }
+  const checks = await Promise.all(raceSessions.map(async (session) => {
+    if (session.is_cancelled || new Date(session.date_end || session.date_start).getTime() > now) return null;
+    try {
+      const results = await fetchJson(`${openF1}/session_result?session_key=${session.session_key}`, { cacheMs: 120000 });
+      return results.some((result) => result.position === 1) ? session : null;
+    } catch {
+      return null;
+    }
+  }));
 
-  const races = [];
-  for (const [index, session] of completedRaceSessions.entries()) {
-    races.push(await buildRace(session, index, sprintSessions));
-  }
-  const standings = buildStandings(races);
-  const constructorStandings = buildConstructorStandings(races);
+  const completed = checks.filter(Boolean);
+  const races = (await Promise.all(completed.map((session, index) => buildRace(session, index, sprintSessions).catch((error) => {
+    console.warn(`[sync] skipped ${session.location}: ${error.message}`);
+    return null;
+  })))).filter(Boolean);
+  const { standings, constructorStandings } = buildStandings(races);
   races.forEach((race) => delete race.standingsSource);
 
-  const payload = {
-    source: "OpenF1 实时源",
-    updatedAt: new Date().toISOString(),
-    races,
-    standings,
-    constructorStandings
-  };
-
-  await fs.mkdir(cacheDir, { recursive: true });
-  await fs.writeFile(cacheFile, JSON.stringify(payload, null, 2), "utf8");
+  const payload = { source: "OpenF1 实时源", updatedAt: new Date().toISOString(), races, standings, constructorStandings };
+  if (races.length) await writeCache(payload);
   console.log(`[sync] updated ${races.length} races at ${payload.updatedAt}`);
   return payload;
 }
 
-async function readCache() {
-  if (!existsSync(cacheFile)) return null;
-  return JSON.parse(await fs.readFile(cacheFile, "utf8"));
+function warmingPayload(error) {
+  return annotate(currentPayload || {}, {
+    syncStatus: "warming",
+    stale: true,
+    lastSyncError: error?.message || lastSyncError || "Live sync is warming"
+  });
 }
-
-let currentPayload = null;
-let refreshPromise = null;
 
 function runRefresh() {
   if (!refreshPromise) {
     refreshPromise = refreshData()
       .then((payload) => {
-        currentPayload = payload;
-        return payload;
+        lastSyncError = null;
+        nextUpdateAt = new Date(Date.now() + updateIntervalMs).toISOString();
+        currentPayload = annotate(payload, { syncStatus: "live", stale: false, lastSyncError: null });
+        return currentPayload;
+      })
+      .catch(async (error) => {
+        lastSyncError = error.message;
+        nextUpdateAt = new Date(Date.now() + updateIntervalMs).toISOString();
+        const fallback = usablePayload(currentPayload) ? currentPayload : await readCache();
+        currentPayload = fallback ? annotate(fallback, { syncStatus: "stale-cache", stale: true, lastSyncError }) : warmingPayload(error);
+        console.warn(`[sync] refresh failed, serving fallback: ${error.message}`);
+        return currentPayload;
       })
       .finally(() => {
         refreshPromise = null;
@@ -487,45 +416,42 @@ function runRefresh() {
 }
 
 async function getPayload() {
-  if (currentPayload?.races?.length) return currentPayload;
-  currentPayload = await readCache();
-  if (currentPayload?.races?.length) return currentPayload;
-  currentPayload = await runRefresh();
-  return currentPayload;
+  if (usablePayload(currentPayload)) return annotate(currentPayload);
+  const cached = await readCache();
+  if (cached) {
+    currentPayload = annotate(cached, { syncStatus: "cached-warming", stale: true, lastSyncError });
+    runRefresh();
+    return currentPayload;
+  }
+  return runRefresh();
+}
+
+function json(response, status, payload) {
+  response.writeHead(status, {
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "no-store",
+    "Access-Control-Allow-Origin": "*"
+  });
+  response.end(JSON.stringify(payload));
 }
 
 async function serveApi(response) {
-  try {
-    const payload = await getPayload();
-    response.writeHead(200, {
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "no-store",
-      "Access-Control-Allow-Origin": "*"
-    });
-    response.end(JSON.stringify(payload));
-  } catch (error) {
-    response.writeHead(503, { "Content-Type": "application/json; charset=utf-8" });
-    response.end(JSON.stringify({ error: error.message }));
-  }
+  const payload = await getPayload().catch((error) => warmingPayload(error));
+  json(response, 200, payload);
 }
 
 async function serveStatic(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
   const requested = decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname);
   const filePath = path.normalize(path.join(root, requested));
-
   if (!filePath.startsWith(root)) {
     response.writeHead(403);
     response.end("Forbidden");
     return;
   }
-
   try {
     const data = await fs.readFile(filePath);
-    response.writeHead(200, {
-      "Content-Type": mimeTypes[path.extname(filePath).toLowerCase()] || "application/octet-stream",
-      "Cache-Control": "no-cache"
-    });
+    response.writeHead(200, { "Content-Type": mimeTypes[path.extname(filePath).toLowerCase()] || "application/octet-stream", "Cache-Control": "no-cache" });
     response.end(data);
   } catch {
     response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
@@ -535,14 +461,18 @@ async function serveStatic(request, response) {
 
 const server = http.createServer((request, response) => {
   if (request.url.startsWith("/api/health")) {
-    response.writeHead(200, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" });
-    response.end(JSON.stringify({
+    json(response, 200, {
       ok: true,
       source: currentPayload?.source || "warming",
+      syncStatus: currentPayload?.syncStatus || "warming",
+      stale: Boolean(currentPayload?.stale),
+      lastSyncError,
+      nextUpdateAt,
       updatedAt: currentPayload?.updatedAt || null,
       races: currentPayload?.races?.length || 0,
-      standings: currentPayload?.standings?.length || 0
-    }));
+      standings: currentPayload?.standings?.length || 0,
+      constructorStandings: currentPayload?.constructorStandings?.length || 0
+    });
     return;
   }
   if (request.url.startsWith("/api/races")) {
@@ -550,15 +480,7 @@ const server = http.createServer((request, response) => {
     return;
   }
   if (request.url.startsWith("/api/refresh")) {
-    runRefresh()
-      .then((payload) => {
-        response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
-        response.end(JSON.stringify(payload));
-      })
-      .catch((error) => {
-        response.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
-        response.end(JSON.stringify({ error: error.message }));
-      });
+    runRefresh().then((payload) => json(response, 200, payload)).catch((error) => json(response, 200, warmingPayload(error)));
     return;
   }
   serveStatic(request, response);
@@ -568,13 +490,7 @@ server.listen(port, "0.0.0.0", () => {
   console.log(`F1 monitor listening on http://0.0.0.0:${port}`);
 });
 
-runRefresh()
-  .catch(async (error) => {
-    console.warn(`[sync] initial refresh failed: ${error.message}`);
-    currentPayload = await readCache();
-  });
-
+runRefresh();
 setInterval(() => {
-  runRefresh()
-    .catch((error) => console.warn(`[sync] refresh failed: ${error.message}`));
+  runRefresh();
 }, updateIntervalMs);
