@@ -811,9 +811,50 @@ tbody tr:hover {
 }
 
 .constructor-card {
+  position: relative;
+  overflow: hidden;
   background:
     linear-gradient(90deg, color-mix(in srgb, var(--team-color, var(--accent-2)) 20%, transparent), transparent 42%),
     #20232b;
+}
+
+.constructor-card.car-standing {
+  min-height: 136px;
+  border-color: color-mix(in srgb, var(--team-color, var(--accent-2)) 72%, var(--line));
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--team-color, var(--accent-2)) 28%, #20232b), rgba(32, 35, 43, 0.94) 42%, rgba(32, 35, 43, 0.88)),
+    #20232b;
+}
+
+.constructor-card.car-standing::before {
+  position: absolute;
+  inset: 0 96px 0 auto;
+  width: min(58%, 760px);
+  content: "";
+  background:
+    linear-gradient(90deg, transparent, rgba(32, 35, 43, 0.22) 18%, rgba(32, 35, 43, 0.78) 100%),
+    var(--car-image) right center / contain no-repeat;
+  opacity: 0.62;
+  filter:
+    saturate(1.12)
+    drop-shadow(0 18px 34px color-mix(in srgb, var(--team-color, var(--accent-2)) 24%, transparent));
+  transform: translateX(24px) scale(1.05);
+}
+
+.constructor-card.car-standing::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    radial-gradient(circle at 70% 50%, color-mix(in srgb, var(--team-color, var(--accent-2)) 18%, transparent), transparent 32%),
+    repeating-linear-gradient(115deg, transparent 0 16px, color-mix(in srgb, var(--team-color, var(--accent-2)) 12%, transparent) 16px 17px);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.constructor-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .standing-media {
@@ -1055,6 +1096,16 @@ tbody tr:hover {
     grid-template-columns: 76px 42px minmax(0, 1fr) 86px;
   }
 
+  .constructor-card.car-standing {
+    min-height: 124px;
+  }
+
+  .constructor-card.car-standing::before {
+    right: 58px;
+    width: 56%;
+    opacity: 0.48;
+  }
+
   .standings-card .team-chip,
   .standings-card .wins-cell {
     display: none;
@@ -1128,6 +1179,18 @@ tbody tr:hover {
   .standings-card.top-standing {
     grid-template-columns: 64px 38px minmax(0, 1fr) 76px;
     min-height: 96px;
+  }
+
+  .constructor-card.car-standing {
+    min-height: 118px;
+  }
+
+  .constructor-card.car-standing::before {
+    inset: auto 10px 8px auto;
+    width: 68%;
+    height: 66px;
+    opacity: 0.34;
+    transform: translateX(20px) scale(1.06);
   }
 
   .standing-media {
