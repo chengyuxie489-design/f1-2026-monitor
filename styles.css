@@ -821,11 +821,13 @@ tbody tr:hover {
   height: 86px;
   display: grid;
   place-items: center;
+  position: relative;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--team-color, var(--accent)) 58%, var(--line));
   border-radius: 8px;
   background:
-    radial-gradient(circle at 50% 22%, color-mix(in srgb, var(--team-color, var(--accent)) 26%, transparent), transparent 58%),
+    radial-gradient(circle at 42% 42%, color-mix(in srgb, var(--team-color, var(--accent)) 36%, transparent), transparent 60%),
+    linear-gradient(135deg, color-mix(in srgb, var(--team-color, var(--accent)) 22%, transparent), transparent 58%),
     rgba(255, 255, 255, 0.06);
 }
 
@@ -846,7 +848,11 @@ tbody tr:hover {
 .team-logo {
   height: 74px;
   width: 92px;
-  padding: 6px;
+  padding: 10px;
+  border-color: color-mix(in srgb, var(--team-color, var(--accent)) 72%, transparent);
+  box-shadow:
+    inset 0 0 28px color-mix(in srgb, var(--team-color, var(--accent)) 18%, transparent),
+    0 0 32px color-mix(in srgb, var(--team-color, var(--accent)) 18%, transparent);
 }
 
 .team-logo-official,
@@ -855,12 +861,18 @@ tbody tr:hover {
   width: 100%;
   height: 100%;
   border-radius: 6px;
-  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.35));
+  position: relative;
+  z-index: 2;
+  filter:
+    drop-shadow(0 0 9px color-mix(in srgb, var(--team-color, var(--accent)) 78%, transparent))
+    drop-shadow(0 9px 20px rgba(0, 0, 0, 0.48));
+  opacity: 0.94;
 }
 
 .team-logo-official {
   display: block;
   object-fit: contain;
+  mix-blend-mode: screen;
 }
 
 .team-logo-fallback {
@@ -873,6 +885,42 @@ tbody tr:hover {
 
 .team-logo-fallback-svg {
   display: block;
+}
+
+.logo-particles,
+.logo-particles::before,
+.logo-particles::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+}
+
+.logo-particles {
+  z-index: 1;
+  background:
+    radial-gradient(circle at 18% 24%, color-mix(in srgb, var(--team-color, var(--accent)) 90%, #fff) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 72% 22%, color-mix(in srgb, var(--team-color, var(--accent)) 72%, #fff) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 40% 78%, color-mix(in srgb, var(--team-color, var(--accent)) 86%, #fff) 0 1.5px, transparent 2px),
+    radial-gradient(circle at 82% 68%, #fff 0 1px, transparent 1.6px);
+  background-size: 18px 18px, 22px 22px, 16px 16px, 26px 26px;
+  opacity: 0.62;
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 72%, transparent);
+}
+
+.logo-particles::before {
+  background:
+    linear-gradient(115deg, transparent 0 42%, color-mix(in srgb, var(--team-color, var(--accent)) 65%, transparent) 42% 44%, transparent 44%),
+    repeating-linear-gradient(135deg, transparent 0 9px, color-mix(in srgb, var(--team-color, var(--accent)) 28%, transparent) 9px 10px);
+  opacity: 0.7;
+}
+
+.logo-particles::after {
+  inset: auto -18px 8px 24px;
+  height: 18px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--team-color, var(--accent)) 82%, #fff), transparent);
+  filter: blur(10px);
+  opacity: 0.8;
 }
 
 .rank-badge {

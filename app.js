@@ -367,6 +367,7 @@ function teamLogoMarkup(team, teamColor) {
 
   return `
     <div class="standing-media team-logo" aria-label="${safeText(team)} 车队标志">
+      <span class="logo-particles" aria-hidden="true"></span>
       ${officialImage}
       <div class="${fallbackClass}">${fallbackLogo}</div>
     </div>
