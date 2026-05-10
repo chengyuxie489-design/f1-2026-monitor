@@ -752,7 +752,12 @@ tbody tr:hover {
 }
 
 .standings-section {
-  min-height: 700px;
+  min-height: 0;
+  padding: 0 0 16px;
+}
+
+.standings-section .standings-hero {
+  display: none;
 }
 
 .standings-hero {
