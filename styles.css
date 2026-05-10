@@ -849,11 +849,30 @@ tbody tr:hover {
   padding: 6px;
 }
 
+.team-logo-official,
+.team-logo-fallback,
 .team-logo svg {
   width: 100%;
   height: 100%;
   border-radius: 6px;
   filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.35));
+}
+
+.team-logo-official {
+  display: block;
+  object-fit: contain;
+}
+
+.team-logo-fallback {
+  display: none;
+}
+
+.team-logo-fallback.visible {
+  display: block;
+}
+
+.team-logo-fallback-svg {
+  display: block;
 }
 
 .rank-badge {

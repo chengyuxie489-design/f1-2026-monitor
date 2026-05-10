@@ -322,12 +322,26 @@ function teamLogoSpec(team) {
   return match || [String(team || "TEAM").toUpperCase(), String(team || "TM").slice(0, 3).toUpperCase(), "909090"];
 }
 
-function teamLogoSvg(team, teamColor) {
+function officialTeamLogoUrl(team) {
+  const key = String(team || "").toLowerCase();
+  const logos = [
+    [/mercedes/, "https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/mercedes/2025mercedeslogowhite.webp"],
+    [/ferrari/, "https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/ferrari/2025ferrarilogolight.webp"],
+    [/mclaren/, "https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/mclaren/2025mclarenlogowhite.webp"],
+    [/red bull/, "https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/redbullracing/2025redbullracinglogowhite.webp"],
+    [/williams/, "https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/williams/2025williamslogowhite.webp"],
+    [/aston martin/, "https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/astonmartin/2025astonmartinlogowhite.webp"],
+    [/alpine/, "https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/alpine/2025alpinelogowhite.webp"],
+    [/haas/, "https://media.formula1.com/image/upload/c_fit%2Ch_64/q_auto/v1740000001/common/f1/2025/haas/2025haaslogowhite.webp"]
+  ];
+  return logos.find(([pattern]) => pattern.test(key))?.[1] || "";
+}
+
+function fallbackTeamLogoSvg(team, teamColor) {
   const [label, mark, fallbackColor] = teamLogoSpec(team);
   const color = cleanHex(teamColor || fallbackColor);
   return `
-    <div class="standing-media team-logo" aria-label="${safeText(team)} 车队标志">
-      <svg viewBox="0 0 240 160" role="img" focusable="false">
+    <svg class="team-logo-fallback-svg" viewBox="0 0 240 160" role="img" focusable="false">
       <defs>
         <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0" stop-color="#${color}"/>
@@ -339,7 +353,22 @@ function teamLogoSvg(team, teamColor) {
       <path d="M32 126 H160 L208 44" fill="none" stroke="#fff" stroke-opacity=".72" stroke-width="8" stroke-linecap="round"/>
       <text x="36" y="86" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900">${safeText(mark)}</text>
       <text x="36" y="116" fill="#fff" fill-opacity=".82" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">${safeText(label)}</text>
-      </svg>
+    </svg>
+  `;
+}
+
+function teamLogoMarkup(team, teamColor) {
+  const officialLogo = officialTeamLogoUrl(team);
+  const fallbackLogo = fallbackTeamLogoSvg(team, teamColor);
+  const fallbackClass = officialLogo ? "team-logo-fallback" : "team-logo-fallback visible";
+  const officialImage = officialLogo
+    ? `<img class="team-logo-official" src="${safeText(officialLogo)}" alt="${safeText(team)} 官方车队标志" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.classList.add('visible')">`
+    : "";
+
+  return `
+    <div class="standing-media team-logo" aria-label="${safeText(team)} 车队标志">
+      ${officialImage}
+      <div class="${fallbackClass}">${fallbackLogo}</div>
     </div>
   `;
 }
@@ -647,7 +676,7 @@ function renderConstructorStandings() {
       const drivers = Array.isArray(entry.drivers) ? entry.drivers.join(" / ") : "";
       const score = Math.round(((Number(entry.points) || 0) / maxPoints) * 100);
       const isTopThree = Number(entry.position) <= 3;
-      const logoMarkup = isTopThree ? teamLogoSvg(entry.team, entry.teamColor) : "";
+      const logoMarkup = isTopThree ? teamLogoMarkup(entry.team, entry.teamColor) : "";
       return `
         <article class="standings-card constructor-card ${isTopThree ? "top-standing" : ""}" style="--team-color:#${safeText(cleanHex(entry.teamColor))}; --score:${score}%">
           ${logoMarkup}
