@@ -50,47 +50,11 @@ const raceNameByCircuit = {
   "Yas Marina Circuit": "阿布扎比大奖赛"
 };
 
-const localProfiles = {
-  Melbourne: {
-    title: "墨尔本 · 公园与海湾",
-    kicker: "Albert Park",
-    accent: "#34b7b6",
-    accent2: "#f2c24d",
-    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Melbourne%20skyline%20-%20Albert%20Park.jpg",
-    track: "M46 118 C66 65 108 35 155 52 C198 68 246 44 270 78 C292 110 254 143 209 134 C172 127 154 156 113 146 C78 137 42 151 46 118",
-    start: [46, 118],
-    facts: [["城市气质", "湖畔街道赛", "Albert Park 把城市天际线、湖面和临时围场揉在一起。"]]
-  },
-  Shanghai: {
-    title: "上海 · 嘉定速度场",
-    kicker: "Shanghai",
-    accent: "#e43d30",
-    accent2: "#f7d45a",
-    image: "https://commons.wikimedia.org/wiki/Special:FilePath/F-1%20Circuit%20Shanghai%20-%20panoramio.jpg",
-    track: "M64 100 C68 50 135 45 150 86 C164 130 225 118 256 84 C283 58 303 94 277 126 C242 166 150 151 105 146 C70 143 44 126 64 100",
-    start: [64, 100],
-    facts: [["城市气质", "都市北翼", "嘉定赛车场连接地铁、产业园区和上海周末观赛人潮。"]]
-  },
-  Suzuka: {
-    title: "铃鹿 · 山林技术课",
-    kicker: "Suzuka",
-    accent: "#d83b49",
-    accent2: "#86c66b",
-    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Suzuka%20Circuit%20Main%20Straight.jpg",
-    track: "M42 96 C78 46 120 54 142 89 C164 125 206 77 245 55 C284 35 300 86 265 111 C227 137 191 124 167 150 C141 179 82 161 59 133 C46 119 34 111 42 96",
-    start: [42, 96],
-    facts: [["城市气质", "本田主场", "八字交叉布局与连续弯让铃鹿始终带着清晰的技术性。"]]
-  },
-  Miami: {
-    title: "迈阿密 · 海岸娱乐周",
-    kicker: "Miami",
-    accent: "#ff5c8a",
-    accent2: "#36d6d1",
-    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Miami%20skyline%20%281%29.jpg",
-    track: "M36 104 C60 64 98 54 132 73 C164 91 194 68 224 62 C261 55 297 82 280 116 C262 153 205 143 175 126 C144 108 126 153 84 148 C52 145 25 130 36 104",
-    start: [36, 104],
-    facts: [["城市气质", "体育场街区", "围绕 Hard Rock Stadium 搭建的临时赛道，派对感很强。"]]
-  }
+const profiles = {
+  Melbourne: ["墨尔本 · 公园与海湾", "#34b7b6", "#f2c24d", "https://commons.wikimedia.org/wiki/Special:FilePath/Melbourne%20skyline%20-%20Albert%20Park.jpg", "M46 118 C66 65 108 35 155 52 C198 68 246 44 270 78 C292 110 254 143 209 134 C172 127 154 156 113 146 C78 137 42 151 46 118", [46, 118]],
+  Shanghai: ["上海 · 嘉定速度场", "#e43d30", "#f7d45a", "https://commons.wikimedia.org/wiki/Special:FilePath/F-1%20Circuit%20Shanghai%20-%20panoramio.jpg", "M64 100 C68 50 135 45 150 86 C164 130 225 118 256 84 C283 58 303 94 277 126 C242 166 150 151 105 146 C70 143 44 126 64 100", [64, 100]],
+  Suzuka: ["铃鹿 · 山林技术课", "#d83b49", "#86c66b", "https://commons.wikimedia.org/wiki/Special:FilePath/Suzuka%20Circuit%20Main%20Straight.jpg", "M42 96 C78 46 120 54 142 89 C164 125 206 77 245 55 C284 35 300 86 265 111 C227 137 191 124 167 150 C141 179 82 161 59 133 C46 119 34 111 42 96", [42, 96]],
+  Miami: ["迈阿密 · 海岸娱乐周", "#ff5c8a", "#36d6d1", "https://commons.wikimedia.org/wiki/Special:FilePath/Miami%20skyline%20%281%29.jpg", "M36 104 C60 64 98 54 132 73 C164 91 194 68 224 62 C261 55 297 82 280 116 C262 153 205 143 175 126 C144 108 126 153 84 148 C52 145 25 130 36 104", [36, 104]]
 };
 
 let currentPayload = null;
@@ -98,9 +62,7 @@ let refreshPromise = null;
 let lastSyncError = null;
 let nextUpdateAt = null;
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function fetchJson(url, options = {}) {
   const cacheMs = options.cacheMs ?? 60000;
@@ -108,11 +70,11 @@ async function fetchJson(url, options = {}) {
   if (cached && Date.now() - cached.time < cacheMs) return cached.data;
 
   let lastError;
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < 4; attempt += 1) {
     try {
       const response = await fetch(url, {
-        signal: AbortSignal.timeout(options.timeoutMs || 20000),
-        headers: { "User-Agent": "f1-2026-monitor/1.1" }
+        signal: AbortSignal.timeout(options.timeoutMs || 30000),
+        headers: { "User-Agent": "f1-2026-monitor/1.2" }
       });
       if (response.ok) {
         const data = await response.json();
@@ -120,10 +82,11 @@ async function fetchJson(url, options = {}) {
         return data;
       }
       lastError = new Error(`${response.status} ${response.statusText}: ${url}`);
+      if (response.status === 429) await sleep(3000 * (attempt + 1));
     } catch (error) {
       lastError = error;
     }
-    await sleep(600 * (attempt + 1));
+    await sleep(900 * (attempt + 1));
   }
 
   if (cached?.data) return cached.data;
@@ -197,15 +160,16 @@ async function fastestLaps(sessionKey, drivers) {
   }
 }
 
-function genericProfile(session) {
+function profileFor(session) {
+  const profile = profiles[session.circuit_short_name] || [`${session.location} · 当地赛周`, "#f03638", "#31d0aa", "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80", "M44 98 C70 52 126 42 164 70 C195 93 228 54 268 78 C302 98 282 144 239 144 C193 144 180 120 144 142 C104 166 32 144 44 98", [44, 98]];
   return {
-    title: `${session.location} · 当地赛周`,
+    title: profile[0],
     kicker: session.circuit_short_name,
-    accent: "#f03638",
-    accent2: "#31d0aa",
-    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80",
-    track: "M44 98 C70 52 126 42 164 70 C195 93 228 54 268 78 C302 98 282 144 239 144 C193 144 180 120 144 142 C104 166 32 144 44 98",
-    start: [44, 98],
+    accent: profile[1],
+    accent2: profile[2],
+    image: profile[3],
+    track: profile[4],
+    start: profile[5],
     facts: [["数据状态", "实时同步", "比赛结果由 OpenF1 定时更新；网络波动时会保留最近一次可用快照。"]]
   };
 }
@@ -217,7 +181,7 @@ async function buildRace(session, index, sprintSessions) {
     fastestLaps(session.session_key, raceData.drivers),
     sprintSession ? sessionRows(sprintSession.session_key).catch(() => null) : null
   ]);
-  const profile = localProfiles[session.circuit_short_name] || genericProfile(session);
+  const local = profileFor(session);
   const date = new Intl.DateTimeFormat("zh-CN", { timeZone: "UTC", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(session.date_start));
   const winner = raceData.rows[0]?.[1] || "待确认";
   const second = raceData.rows[1]?.[1] || "第二名";
@@ -237,38 +201,20 @@ async function buildRace(session, index, sprintSessions) {
     source: `https://openf1.org/?session_key=${session.session_key}`,
     resultSource: `https://api.openf1.org/v1/session_result?session_key=${session.session_key}`,
     note: `${session.location} 站由 ${winner} 获胜，${second} 与 ${third} 登上领奖台。结果由 OpenF1 自动同步。`,
-    local: profile,
-    track: profile.track,
-    start: profile.start,
+    local,
+    track: local.track,
+    start: local.start,
     race: raceData.rows,
     fastest,
     sprintResult: sprintData?.rows || [],
-    standingsSource: {
-      race: raceData.results,
-      raceDrivers: raceData.drivers,
-      sprint: sprintData?.results || [],
-      sprintDrivers: sprintData?.drivers || []
-    }
+    standingsSource: { race: raceData.results, raceDrivers: raceData.drivers, sprint: sprintData?.results || [], sprintDrivers: sprintData?.drivers || [] }
   };
 }
 
-function addResultToStandings(table, result, driver, sessionType) {
+function addDriver(table, result, driver, sessionType) {
   if (!driver) return;
   const key = driver.driver_number;
-  const current = table.get(key) || {
-    position: 0,
-    driverNumber: key,
-    driver: driverName(driver),
-    acronym: driver.name_acronym || "",
-    team: driver.team_name || "-",
-    teamColor: cleanTeamColor(driver.team_colour),
-    headshotUrl: driver.headshot_url || "",
-    points: 0,
-    wins: 0,
-    podiums: 0,
-    racePoints: 0,
-    sprintPoints: 0
-  };
+  const current = table.get(key) || { position: 0, driverNumber: key, driver: driverName(driver), acronym: driver.name_acronym || "", team: driver.team_name || "-", teamColor: cleanTeamColor(driver.team_colour), headshotUrl: driver.headshot_url || "", points: 0, wins: 0, podiums: 0, racePoints: 0, sprintPoints: 0 };
   const points = Number(result.points || 0);
   current.points += points;
   if (sessionType === "sprint") current.sprintPoints += points;
@@ -281,7 +227,7 @@ function addResultToStandings(table, result, driver, sessionType) {
   table.set(key, current);
 }
 
-function addResultToConstructors(table, result, driver, sessionType) {
+function addTeam(table, result, driver, sessionType) {
   if (!driver) return;
   const team = driver.team_name || "Unknown";
   const current = table.get(team) || { position: 0, team, teamColor: cleanTeamColor(driver.team_colour), points: 0, wins: 0, podiums: 0, racePoints: 0, sprintPoints: 0, drivers: new Set() };
@@ -303,12 +249,12 @@ function buildStandings(races) {
     const raceDrivers = new Map((race.standingsSource?.raceDrivers || []).map((driver) => [driver.driver_number, driver]));
     const sprintDrivers = new Map((race.standingsSource?.sprintDrivers || []).map((driver) => [driver.driver_number, driver]));
     for (const result of race.standingsSource?.race || []) {
-      addResultToStandings(drivers, result, raceDrivers.get(result.driver_number), "race");
-      addResultToConstructors(teams, result, raceDrivers.get(result.driver_number), "race");
+      addDriver(drivers, result, raceDrivers.get(result.driver_number), "race");
+      addTeam(teams, result, raceDrivers.get(result.driver_number), "race");
     }
     for (const result of race.standingsSource?.sprint || []) {
-      addResultToStandings(drivers, result, sprintDrivers.get(result.driver_number), "sprint");
-      addResultToConstructors(teams, result, sprintDrivers.get(result.driver_number), "sprint");
+      addDriver(drivers, result, sprintDrivers.get(result.driver_number), "sprint");
+      addTeam(teams, result, sprintDrivers.get(result.driver_number), "sprint");
     }
   }
   const standings = Array.from(drivers.values()).sort((a, b) => b.points - a.points || b.wins - a.wins || b.podiums - a.podiums || a.driver.localeCompare(b.driver)).map((entry, index) => ({ ...entry, position: index + 1, points: Number(entry.points.toFixed(1)), racePoints: Number(entry.racePoints.toFixed(1)), sprintPoints: Number(entry.sprintPoints.toFixed(1)) }));
@@ -322,18 +268,7 @@ function usablePayload(payload) {
 
 function annotate(payload, metadata = {}) {
   const updatedTime = payload?.updatedAt ? new Date(payload.updatedAt).getTime() : NaN;
-  return {
-    source: payload?.source || "OpenF1 warming",
-    updatedAt: payload?.updatedAt || null,
-    races: payload?.races || [],
-    standings: payload?.standings || [],
-    constructorStandings: payload?.constructorStandings || [],
-    syncStatus: metadata.syncStatus || payload?.syncStatus || "live",
-    stale: metadata.stale ?? payload?.stale ?? false,
-    lastSyncError: metadata.lastSyncError ?? payload?.lastSyncError ?? null,
-    nextUpdateAt,
-    cacheAgeMs: Number.isFinite(updatedTime) ? Math.max(0, Date.now() - updatedTime) : null
-  };
+  return { source: payload?.source || "OpenF1 warming", updatedAt: payload?.updatedAt || null, races: payload?.races || [], standings: payload?.standings || [], constructorStandings: payload?.constructorStandings || [], syncStatus: metadata.syncStatus || payload?.syncStatus || "live", stale: metadata.stale ?? payload?.stale ?? false, lastSyncError: metadata.lastSyncError ?? payload?.lastSyncError ?? null, nextUpdateAt, cacheAgeMs: Number.isFinite(updatedTime) ? Math.max(0, Date.now() - updatedTime) : null };
 }
 
 async function readCache() {
@@ -359,24 +294,30 @@ async function refreshData() {
     fetchJson(`${openF1}/sessions?year=2026&session_name=Sprint`, { cacheMs: 120000 })
   ]);
 
-  const checks = await Promise.all(raceSessions.map(async (session) => {
-    if (session.is_cancelled || new Date(session.date_end || session.date_start).getTime() > now) return null;
+  const completed = [];
+  for (const session of raceSessions) {
+    if (session.is_cancelled || new Date(session.date_end || session.date_start).getTime() > now) continue;
     try {
       const results = await fetchJson(`${openF1}/session_result?session_key=${session.session_key}`, { cacheMs: 120000 });
-      return results.some((result) => result.position === 1) ? session : null;
+      if (results.some((result) => result.position === 1)) completed.push(session);
     } catch {
-      return null;
+      // Some past sessions do not have published results yet; continue syncing the rest.
     }
-  }));
+    await sleep(350);
+  }
 
-  const completed = checks.filter(Boolean);
-  const races = (await Promise.all(completed.map((session, index) => buildRace(session, index, sprintSessions).catch((error) => {
-    console.warn(`[sync] skipped ${session.location}: ${error.message}`);
-    return null;
-  })))).filter(Boolean);
+  const races = [];
+  for (const session of completed) {
+    try {
+      races.push(await buildRace(session, races.length, sprintSessions));
+    } catch (error) {
+      console.warn(`[sync] skipped ${session.location}: ${error.message}`);
+    }
+    await sleep(500);
+  }
+
   const { standings, constructorStandings } = buildStandings(races);
   races.forEach((race) => delete race.standingsSource);
-
   const payload = { source: "OpenF1 实时源", updatedAt: new Date().toISOString(), races, standings, constructorStandings };
   if (races.length) await writeCache(payload);
   console.log(`[sync] updated ${races.length} races at ${payload.updatedAt}`);
@@ -384,11 +325,7 @@ async function refreshData() {
 }
 
 function warmingPayload(error) {
-  return annotate(currentPayload || {}, {
-    syncStatus: "warming",
-    stale: true,
-    lastSyncError: error?.message || lastSyncError || "Live sync is warming"
-  });
+  return annotate(currentPayload || {}, { syncStatus: "warming", stale: true, lastSyncError: error?.message || lastSyncError || "Live sync is warming" });
 }
 
 function runRefresh() {
@@ -427,11 +364,7 @@ async function getPayload() {
 }
 
 function json(response, status, payload) {
-  response.writeHead(status, {
-    "Content-Type": "application/json; charset=utf-8",
-    "Cache-Control": "no-store",
-    "Access-Control-Allow-Origin": "*"
-  });
+  response.writeHead(status, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", "Access-Control-Allow-Origin": "*" });
   response.end(JSON.stringify(payload));
 }
 
@@ -461,18 +394,7 @@ async function serveStatic(request, response) {
 
 const server = http.createServer((request, response) => {
   if (request.url.startsWith("/api/health")) {
-    json(response, 200, {
-      ok: true,
-      source: currentPayload?.source || "warming",
-      syncStatus: currentPayload?.syncStatus || "warming",
-      stale: Boolean(currentPayload?.stale),
-      lastSyncError,
-      nextUpdateAt,
-      updatedAt: currentPayload?.updatedAt || null,
-      races: currentPayload?.races?.length || 0,
-      standings: currentPayload?.standings?.length || 0,
-      constructorStandings: currentPayload?.constructorStandings?.length || 0
-    });
+    json(response, 200, { ok: true, source: currentPayload?.source || "warming", syncStatus: currentPayload?.syncStatus || "warming", stale: Boolean(currentPayload?.stale), lastSyncError, nextUpdateAt, updatedAt: currentPayload?.updatedAt || null, races: currentPayload?.races?.length || 0, standings: currentPayload?.standings?.length || 0, constructorStandings: currentPayload?.constructorStandings?.length || 0 });
     return;
   }
   if (request.url.startsWith("/api/races")) {
