@@ -322,11 +322,12 @@ function teamLogoSpec(team) {
   return match || [String(team || "TEAM").toUpperCase(), String(team || "TM").slice(0, 3).toUpperCase(), "909090"];
 }
 
-function teamLogoUrl(team, teamColor) {
+function teamLogoSvg(team, teamColor) {
   const [label, mark, fallbackColor] = teamLogoSpec(team);
   const color = cleanHex(teamColor || fallbackColor);
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160">
+  return `
+    <div class="standing-media team-logo" aria-label="${safeText(team)} 车队标志">
+      <svg viewBox="0 0 240 160" role="img" focusable="false">
       <defs>
         <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0" stop-color="#${color}"/>
@@ -336,11 +337,11 @@ function teamLogoUrl(team, teamColor) {
       <rect width="240" height="160" rx="22" fill="#11151d"/>
       <path d="M24 120 L74 34 H214 L164 120 Z" fill="url(#g)" opacity=".95"/>
       <path d="M32 126 H160 L208 44" fill="none" stroke="#fff" stroke-opacity=".72" stroke-width="8" stroke-linecap="round"/>
-      <text x="36" y="86" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900">${mark}</text>
-      <text x="36" y="116" fill="#fff" fill-opacity=".82" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">${label}</text>
-    </svg>
+      <text x="36" y="86" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900">${safeText(mark)}</text>
+      <text x="36" y="116" fill="#fff" fill-opacity=".82" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">${safeText(label)}</text>
+      </svg>
+    </div>
   `;
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
 function buildFallbackStandings() {
@@ -646,10 +647,7 @@ function renderConstructorStandings() {
       const drivers = Array.isArray(entry.drivers) ? entry.drivers.join(" / ") : "";
       const score = Math.round(((Number(entry.points) || 0) / maxPoints) * 100);
       const isTopThree = Number(entry.position) <= 3;
-      const logo = teamLogoUrl(entry.team, entry.teamColor);
-      const logoMarkup = isTopThree && logo
-        ? `<div class="standing-media team-logo"><img src="${safeText(logo)}" alt="${safeText(entry.team)} 车队标志" loading="lazy"></div>`
-        : "";
+      const logoMarkup = isTopThree ? teamLogoSvg(entry.team, entry.teamColor) : "";
       return `
         <article class="standings-card constructor-card ${isTopThree ? "top-standing" : ""}" style="--team-color:#${safeText(cleanHex(entry.teamColor))}; --score:${score}%">
           ${logoMarkup}
