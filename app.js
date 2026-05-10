@@ -303,22 +303,44 @@ function cleanHex(value) {
   return String(value || "909090").replace(/^#/, "").slice(0, 6) || "909090";
 }
 
-function teamLogoUrl(team) {
+function teamLogoSpec(team) {
   const key = String(team || "").toLowerCase();
-  const logos = [
-    [/mercedes/, "https://logo.clearbit.com/mercedesamgf1.com"],
-    [/ferrari/, "https://logo.clearbit.com/ferrari.com"],
-    [/mclaren/, "https://logo.clearbit.com/mclaren.com"],
-    [/red bull/, "https://logo.clearbit.com/redbullracing.com"],
-    [/racing bulls|rb/, "https://logo.clearbit.com/visacashapprb.com"],
-    [/williams/, "https://logo.clearbit.com/williamsf1.com"],
-    [/aston martin/, "https://logo.clearbit.com/astonmartinf1.com"],
-    [/alpine/, "https://logo.clearbit.com/alpinecars.com"],
-    [/haas/, "https://logo.clearbit.com/haasf1team.com"],
-    [/audi/, "https://logo.clearbit.com/audi.com"],
-    [/cadillac/, "https://logo.clearbit.com/cadillac.com"]
+  const specs = [
+    [/mercedes/, ["MERCEDES", "AMG", "00D7B6"]],
+    [/ferrari/, ["FERRARI", "SF", "ED1131"]],
+    [/mclaren/, ["McLAREN", "MCL", "F47600"]],
+    [/red bull/, ["RED BULL", "RBR", "4781D7"]],
+    [/racing bulls|rb/, ["RACING BULLS", "RB", "6C98FF"]],
+    [/williams/, ["WILLIAMS", "WIL", "1868DB"]],
+    [/aston martin/, ["ASTON MARTIN", "AMR", "229971"]],
+    [/alpine/, ["ALPINE", "ALP", "00A1E8"]],
+    [/haas/, ["HAAS", "HAA", "9C9FA2"]],
+    [/audi/, ["AUDI", "AUD", "F50537"]],
+    [/cadillac/, ["CADILLAC", "CAD", "909090"]]
   ];
-  return logos.find(([pattern]) => pattern.test(key))?.[1] || "";
+  const match = specs.find(([pattern]) => pattern.test(key))?.[1];
+  return match || [String(team || "TEAM").toUpperCase(), String(team || "TM").slice(0, 3).toUpperCase(), "909090"];
+}
+
+function teamLogoUrl(team, teamColor) {
+  const [label, mark, fallbackColor] = teamLogoSpec(team);
+  const color = cleanHex(teamColor || fallbackColor);
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160">
+      <defs>
+        <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stop-color="#${color}"/>
+          <stop offset="1" stop-color="#ffffff" stop-opacity=".22"/>
+        </linearGradient>
+      </defs>
+      <rect width="240" height="160" rx="22" fill="#11151d"/>
+      <path d="M24 120 L74 34 H214 L164 120 Z" fill="url(#g)" opacity=".95"/>
+      <path d="M32 126 H160 L208 44" fill="none" stroke="#fff" stroke-opacity=".72" stroke-width="8" stroke-linecap="round"/>
+      <text x="36" y="86" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900">${mark}</text>
+      <text x="36" y="116" fill="#fff" fill-opacity=".82" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">${label}</text>
+    </svg>
+  `;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
 function buildFallbackStandings() {
@@ -624,9 +646,9 @@ function renderConstructorStandings() {
       const drivers = Array.isArray(entry.drivers) ? entry.drivers.join(" / ") : "";
       const score = Math.round(((Number(entry.points) || 0) / maxPoints) * 100);
       const isTopThree = Number(entry.position) <= 3;
-      const logo = teamLogoUrl(entry.team);
+      const logo = teamLogoUrl(entry.team, entry.teamColor);
       const logoMarkup = isTopThree && logo
-        ? `<div class="standing-media team-logo"><img src="${safeText(logo)}" alt="${safeText(entry.team)} 车队标志" loading="lazy" onerror="this.closest('.standing-media').remove()"></div>`
+        ? `<div class="standing-media team-logo"><img src="${safeText(logo)}" alt="${safeText(entry.team)} 车队标志" loading="lazy"></div>`
         : "";
       return `
         <article class="standings-card constructor-card ${isTopThree ? "top-standing" : ""}" style="--team-color:#${safeText(cleanHex(entry.teamColor))}; --score:${score}%">
