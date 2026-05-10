@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: f1-2026-monitor
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: UPDATE_INTERVAL_MS
+        value: "120000"

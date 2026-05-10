@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>F1 2026 赛事监测台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">2026 FIA Formula One World Championship</p>
+        <h1>F1 2026 赛事监测台</h1>
+      </div>
+      <div class="status-cluster" aria-label="数据同步状态">
+        <div class="status-pill" id="status-pill">
+          <span class="status-dot"></span>
+          <span id="status-text">正在连接实时源</span>
+        </div>
+        <button class="refresh-button" id="refresh-button" type="button">刷新</button>
+        <span class="sync-countdown" id="sync-countdown">下一次同步 --</span>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <aside class="race-rail" aria-label="已完赛比赛周">
+        <div class="mode-switch" role="tablist" aria-label="页面视图">
+          <button class="mode-button active" type="button" data-mode="races">分站详情</button>
+          <button class="mode-button" type="button" data-mode="standings">车手积分榜</button>
+        </div>
+        <div class="rail-head">
+          <span>已完赛比赛周</span>
+          <strong id="race-count">4</strong>
+        </div>
+        <div id="race-list" class="race-list"></div>
+      </aside>
+
+      <section class="race-panel">
+        <div class="hero-grid race-detail">
+          <div class="race-title-block">
+            <p id="round-label" class="eyebrow"></p>
+            <h2 id="race-name"></h2>
+            <p id="race-meta" class="race-meta"></p>
+            <div class="tag-row" id="tag-row"></div>
+          </div>
+          <div class="track-visual" aria-hidden="true">
+            <svg id="track-map" viewBox="0 0 320 180" role="img">
+              <path id="track-path-shadow" d="" />
+              <path id="track-path" d="" />
+              <circle id="track-start" r="6" />
+            </svg>
+          </div>
+        </div>
+
+        <section class="metric-grid race-detail" aria-label="关键指标">
+          <article class="metric">
+            <span>冠军</span>
+            <strong id="winner"></strong>
+            <small id="winner-team"></small>
+          </article>
+          <article class="metric">
+            <span>领奖台差距</span>
+            <strong id="podium-gap"></strong>
+            <small>第 1 至第 3 名</small>
+          </article>
+          <article class="metric">
+            <span>最快圈</span>
+            <strong id="fastest-lap"></strong>
+            <small id="fastest-driver"></small>
+          </article>
+          <article class="metric">
+            <span>完赛率</span>
+            <strong id="finish-rate"></strong>
+            <small id="finish-count"></small>
+          </article>
+        </section>
+
+        <section class="content-grid race-detail">
+          <article class="panel podium-panel">
+            <div class="section-title">
+              <h3>领奖台</h3>
+              <span id="race-time"></span>
+            </div>
+            <div id="podium" class="podium"></div>
+          </article>
+
+          <article class="panel note-panel">
+            <div class="section-title">
+              <h3>比赛备注</h3>
+            </div>
+            <p id="race-note"></p>
+            <a id="source-link" class="source-link" target="_blank" rel="noreferrer">查看官方结果</a>
+          </article>
+
+          <article class="panel local-panel">
+            <div class="section-title">
+              <h3 id="local-title">当地视角</h3>
+              <span id="local-kicker"></span>
+            </div>
+            <div class="local-hero" id="local-hero"></div>
+            <div id="local-facts" class="local-facts"></div>
+          </article>
+        </section>
+
+        <section class="table-section race-detail">
+          <div class="table-toolbar">
+            <div>
+              <h3>详细数据</h3>
+              <p>正赛完整排名、最快圈前五，以及冲刺周数据。</p>
+            </div>
+            <div class="tabs" role="tablist" aria-label="数据视图">
+              <button class="tab active" data-view="race" type="button">正赛</button>
+              <button class="tab" data-view="fastest" type="button">最快圈</button>
+              <button class="tab" data-view="sprint" type="button">冲刺赛</button>
+            </div>
+          </div>
+          <div id="table-wrap" class="table-wrap"></div>
+        </section>
+
+        <section class="standings-section" id="standings-section" hidden>
+          <div class="standings-hero">
+            <div>
+              <p class="eyebrow">LIVE DRIVER STANDINGS</p>
+              <h2>2026 车手实时积分榜</h2>
+              <p id="standings-meta">按已完成正赛与冲刺赛积分自动汇总。</p>
+            </div>
+            <div class="standings-leader" id="standings-leader"></div>
+          </div>
+          <div id="standings-grid" class="standings-grid"></div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="footer">
+      数据由 OpenF1 实时源自动同步，页面会在后台定时刷新并保留最近一次可用快照。
+    </footer>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
