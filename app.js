@@ -303,6 +303,24 @@ function cleanHex(value) {
   return String(value || "909090").replace(/^#/, "").slice(0, 6) || "909090";
 }
 
+function teamLogoUrl(team) {
+  const key = String(team || "").toLowerCase();
+  const logos = [
+    [/mercedes/, "https://logo.clearbit.com/mercedesamgf1.com"],
+    [/ferrari/, "https://logo.clearbit.com/ferrari.com"],
+    [/mclaren/, "https://logo.clearbit.com/mclaren.com"],
+    [/red bull/, "https://logo.clearbit.com/redbullracing.com"],
+    [/racing bulls|rb/, "https://logo.clearbit.com/visacashapprb.com"],
+    [/williams/, "https://logo.clearbit.com/williamsf1.com"],
+    [/aston martin/, "https://logo.clearbit.com/astonmartinf1.com"],
+    [/alpine/, "https://logo.clearbit.com/alpinecars.com"],
+    [/haas/, "https://logo.clearbit.com/haasf1team.com"],
+    [/audi/, "https://logo.clearbit.com/audi.com"],
+    [/cadillac/, "https://logo.clearbit.com/cadillac.com"]
+  ];
+  return logos.find(([pattern]) => pattern.test(key))?.[1] || "";
+}
+
 function buildFallbackStandings() {
   const totals = new Map();
   for (const race of fallbackRaces) {
@@ -567,8 +585,13 @@ function renderStandings() {
   els.standingsGrid.innerHTML = rows
     .map((entry) => {
       const score = Math.round(((Number(entry.points) || 0) / maxPoints) * 100);
+      const isTopThree = Number(entry.position) <= 3;
+      const portrait = isTopThree && entry.headshotUrl
+        ? `<div class="standing-media driver-portrait"><img src="${safeText(entry.headshotUrl)}" alt="${safeText(entry.driver)} 2026 定妆照" loading="lazy" onerror="this.closest('.standing-media').remove()"></div>`
+        : "";
       return `
-      <article class="standings-card" style="--team-color:#${safeText(cleanHex(entry.teamColor))}; --score:${score}%">
+      <article class="standings-card ${isTopThree ? "top-standing" : ""}" style="--team-color:#${safeText(cleanHex(entry.teamColor))}; --score:${score}%">
+        ${portrait}
         <div class="rank-badge">${safeText(entry.position)}</div>
         <div class="driver-cell">
           <strong>${safeText(entry.driver)}</strong>
@@ -600,8 +623,14 @@ function renderConstructorStandings() {
     .map((entry) => {
       const drivers = Array.isArray(entry.drivers) ? entry.drivers.join(" / ") : "";
       const score = Math.round(((Number(entry.points) || 0) / maxPoints) * 100);
+      const isTopThree = Number(entry.position) <= 3;
+      const logo = teamLogoUrl(entry.team);
+      const logoMarkup = isTopThree && logo
+        ? `<div class="standing-media team-logo"><img src="${safeText(logo)}" alt="${safeText(entry.team)} 车队标志" loading="lazy" onerror="this.closest('.standing-media').remove()"></div>`
+        : "";
       return `
-        <article class="standings-card constructor-card" style="--team-color:#${safeText(cleanHex(entry.teamColor))}; --score:${score}%">
+        <article class="standings-card constructor-card ${isTopThree ? "top-standing" : ""}" style="--team-color:#${safeText(cleanHex(entry.teamColor))}; --score:${score}%">
+          ${logoMarkup}
           <div class="rank-badge">${safeText(entry.position)}</div>
           <div class="driver-cell">
             <strong>${safeText(entry.team)}</strong>

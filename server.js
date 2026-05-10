@@ -324,6 +324,7 @@ function addResultToStandings(table, result, driver, sessionType) {
     acronym: driver.name_acronym || "",
     team: driver.team_name || "-",
     teamColor: cleanTeamColor(driver.team_colour),
+    headshotUrl: driver.headshot_url || "",
     points: 0,
     wins: 0,
     podiums: 0,
@@ -340,6 +341,7 @@ function addResultToStandings(table, result, driver, sessionType) {
   if (sessionType === "race" && [1, 2, 3].includes(result.position)) current.podiums += 1;
   current.team = driver.team_name || current.team;
   current.teamColor = cleanTeamColor(driver.team_colour || current.teamColor);
+  current.headshotUrl = driver.headshot_url || current.headshotUrl;
   table.set(key, current);
 }
 

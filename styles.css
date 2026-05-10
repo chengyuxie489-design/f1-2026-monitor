@@ -796,6 +796,15 @@ tbody tr:hover {
     #20232b;
 }
 
+.standings-card.top-standing {
+  grid-template-columns: 92px 48px minmax(0, 1.35fr) minmax(130px, 0.65fr) 96px 96px;
+  min-height: 118px;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--team-color, var(--accent)) 26%, transparent), transparent 46%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent),
+    #20232b;
+}
+
 .standings-card:hover {
   border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
   background: #262933;
@@ -805,6 +814,42 @@ tbody tr:hover {
   background:
     linear-gradient(90deg, color-mix(in srgb, var(--team-color, var(--accent-2)) 20%, transparent), transparent 42%),
     #20232b;
+}
+
+.standing-media {
+  width: 74px;
+  height: 86px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--team-color, var(--accent)) 58%, var(--line));
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 50% 22%, color-mix(in srgb, var(--team-color, var(--accent)) 26%, transparent), transparent 58%),
+    rgba(255, 255, 255, 0.06);
+}
+
+.standing-media img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.driver-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.team-logo {
+  height: 74px;
+  padding: 12px;
+}
+
+.team-logo img {
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.35));
 }
 
 .rank-badge {
@@ -870,6 +915,10 @@ tbody tr:hover {
   background: rgba(255, 255, 255, 0.07);
 }
 
+.top-standing .points-meter {
+  grid-column: 3 / -1;
+}
+
 .points-meter span {
   display: block;
   width: var(--score, 0%);
@@ -929,6 +978,10 @@ tbody tr:hover {
 
   .standings-card {
     grid-template-columns: 42px minmax(0, 1fr) 86px;
+  }
+
+  .standings-card.top-standing {
+    grid-template-columns: 76px 42px minmax(0, 1fr) 86px;
   }
 
   .standings-card .team-chip,
@@ -999,5 +1052,25 @@ tbody tr:hover {
   .standings-card {
     gap: 10px;
     padding: 12px;
+  }
+
+  .standings-card.top-standing {
+    grid-template-columns: 64px 38px minmax(0, 1fr) 76px;
+    min-height: 96px;
+  }
+
+  .standing-media {
+    width: 58px;
+    height: 70px;
+  }
+
+  .team-logo {
+    height: 58px;
+    padding: 9px;
+  }
+
+  .points-meter,
+  .top-standing .points-meter {
+    grid-column: 2 / -1;
   }
 }
