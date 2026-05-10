@@ -389,7 +389,10 @@ function renderRaceList() {
               <small>${race.sprint ? "冲刺周" : "常规周"}</small>
             </div>
             <strong>${safeText(race.name)}</strong>
-            <small>${safeText(winner[1])} · ${safeText(winner[4])}</small>
+            <div class="race-winner-line">
+              <span>WIN</span>
+              <small>${safeText(winner[1])} · ${safeText(winner[4])}</small>
+            </div>
           </div>
           <svg viewBox="0 0 320 180" aria-hidden="true">
             <path d="${safeText(race.track)}"></path>
@@ -552,6 +555,7 @@ function renderTable() {
 function renderStandings() {
   const rows = standings.length ? standings : buildFallbackStandings();
   const leader = rows[0];
+  const maxPoints = Math.max(...rows.map((entry) => Number(entry.points) || 0), 1);
   const updated = dataStatus.updatedAt
     ? new Date(dataStatus.updatedAt).toLocaleString("zh-CN", { hour12: false })
     : "离线缓存";
@@ -571,8 +575,10 @@ function renderStandings() {
   `;
 
   els.standingsGrid.innerHTML = rows
-    .map((entry) => `
-      <article class="standings-card" style="--team-color:#${safeText(cleanHex(entry.teamColor))}">
+    .map((entry) => {
+      const score = Math.round(((Number(entry.points) || 0) / maxPoints) * 100);
+      return `
+      <article class="standings-card" style="--team-color:#${safeText(cleanHex(entry.teamColor))}; --score:${score}%">
         <div class="rank-badge">${safeText(entry.position)}</div>
         <div class="driver-cell">
           <strong>${safeText(entry.driver)}</strong>
@@ -583,15 +589,18 @@ function renderStandings() {
           <span>${safeText(entry.team)}</span>
         </div>
         <span class="wins-cell">${safeText(entry.wins)} 胜 · ${safeText(entry.podiums)} 台</span>
-        <div class="points-cell">${safeText(entry.points)}</div>
+        <div class="points-cell"><strong>${safeText(entry.points)}</strong><span>PTS</span></div>
+        <div class="points-meter"><span></span></div>
       </article>
-    `)
+    `;
+    })
     .join("");
 }
 
 function renderConstructorStandings() {
   const rows = constructorStandings.length ? constructorStandings : buildFallbackConstructorStandings();
   const leader = rows[0];
+  const maxPoints = Math.max(...rows.map((entry) => Number(entry.points) || 0), 1);
   const updated = dataStatus.updatedAt
     ? new Date(dataStatus.updatedAt).toLocaleString("zh-CN", { hour12: false })
     : "离线缓存";
@@ -613,8 +622,9 @@ function renderConstructorStandings() {
   els.constructorsGrid.innerHTML = rows
     .map((entry) => {
       const drivers = Array.isArray(entry.drivers) ? entry.drivers.join(" / ") : "";
+      const score = Math.round(((Number(entry.points) || 0) / maxPoints) * 100);
       return `
-        <article class="standings-card constructor-card" style="--team-color:#${safeText(cleanHex(entry.teamColor))}">
+        <article class="standings-card constructor-card" style="--team-color:#${safeText(cleanHex(entry.teamColor))}; --score:${score}%">
           <div class="rank-badge">${safeText(entry.position)}</div>
           <div class="driver-cell">
             <strong>${safeText(entry.team)}</strong>
@@ -625,7 +635,8 @@ function renderConstructorStandings() {
             <span>正赛 ${safeText(entry.racePoints ?? 0)} 分</span>
           </div>
           <span class="wins-cell">冲刺 ${safeText(entry.sprintPoints ?? 0)} 分 · ${safeText(entry.podiums)} 台</span>
-          <div class="points-cell">${safeText(entry.points)}</div>
+          <div class="points-cell"><strong>${safeText(entry.points)}</strong><span>PTS</span></div>
+          <div class="points-meter"><span></span></div>
         </article>
       `;
     })

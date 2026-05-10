@@ -56,6 +56,28 @@ input {
   padding: 28px clamp(20px, 4vw, 56px) 18px;
 }
 
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border: 1px solid color-mix(in srgb, var(--accent) 58%, var(--line));
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 900;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 72%, #111), color-mix(in srgb, var(--accent-2) 38%, #111)),
+    #17191e;
+  box-shadow: 0 18px 44px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
 .eyebrow {
   margin: 0 0 8px;
   color: var(--accent-2);
@@ -175,25 +197,50 @@ h1 {
 
 .mode-switch {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 8px;
   padding: 14px;
   border-bottom: 1px solid var(--line);
 }
 
 .mode-button {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
   min-height: 40px;
+  padding: 9px 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
   color: var(--muted);
+  text-align: left;
   background: #17191e;
   cursor: pointer;
+}
+
+.mode-index {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  color: color-mix(in srgb, var(--accent-2) 82%, #fff);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+  font-weight: 900;
 }
 
 .mode-button.active {
   color: #fff;
   border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
-  background: color-mix(in srgb, var(--accent) 28%, #17191e);
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 32%, transparent), transparent 70%),
+    #1d2028;
+}
+
+.mode-button.active .mode-index {
+  color: #111;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
 }
 
 .rail-head {
@@ -285,6 +332,31 @@ h1 {
 
 .race-card small {
   color: var(--muted);
+}
+
+.race-winner-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.race-winner-line span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 34px;
+  height: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 60%, var(--line));
+  border-radius: 999px;
+  color: var(--accent-2);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.race-winner-line small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .race-card strong {
@@ -720,7 +792,7 @@ tbody tr:hover {
   grid-template-columns: 48px minmax(0, 1.35fr) minmax(130px, 0.65fr) 96px 96px;
   align-items: center;
   gap: 14px;
-  min-height: 76px;
+  min-height: 88px;
   padding: 14px 16px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -778,9 +850,38 @@ tbody tr:hover {
 
 .points-cell {
   justify-self: end;
-  font-size: 26px;
-  font-weight: 900;
+  display: grid;
+  gap: 2px;
+  text-align: right;
   color: color-mix(in srgb, var(--team-color, var(--accent)) 42%, #fff);
+}
+
+.points-cell strong {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.points-cell span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.points-meter {
+  grid-column: 2 / -1;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.points-meter span {
+  display: block;
+  width: var(--score, 0%);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--team-color, var(--accent)), color-mix(in srgb, var(--accent-2) 76%, #fff));
+  box-shadow: 0 0 18px color-mix(in srgb, var(--team-color, var(--accent)) 46%, transparent);
 }
 
 .team-chip {

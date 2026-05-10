@@ -11,9 +11,12 @@
   </head>
   <body>
     <header class="topbar">
-      <div>
-        <p class="eyebrow">2026 FIA Formula One World Championship</p>
-        <h1>F1 2026 赛事监测台</h1>
+      <div class="brand-lockup">
+        <div class="brand-mark" aria-hidden="true">F1</div>
+        <div>
+          <p class="eyebrow">2026 FIA Formula One World Championship</p>
+          <h1>F1 2026 赛事监测台</h1>
+        </div>
       </div>
       <div class="status-cluster" aria-label="数据同步状态">
         <div class="status-pill" id="status-pill">
@@ -28,9 +31,18 @@
     <main class="dashboard">
       <aside class="race-rail" aria-label="已完赛比赛周">
         <div class="mode-switch" role="tablist" aria-label="页面视图">
-          <button class="mode-button active" type="button" data-mode="races">分站数据</button>
-          <button class="mode-button" type="button" data-mode="standings">车手积分</button>
-          <button class="mode-button" type="button" data-mode="constructors">车队积分</button>
+          <button class="mode-button active" type="button" data-mode="races">
+            <span class="mode-index">01</span>
+            <span>分站数据</span>
+          </button>
+          <button class="mode-button" type="button" data-mode="standings">
+            <span class="mode-index">02</span>
+            <span>车手积分</span>
+          </button>
+          <button class="mode-button" type="button" data-mode="constructors">
+            <span class="mode-index">03</span>
+            <span>车队积分</span>
+          </button>
         </div>
         <div class="rail-head">
           <span>已完赛比赛周</span>
