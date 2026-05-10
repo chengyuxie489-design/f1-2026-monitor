@@ -285,6 +285,22 @@ body[data-mode="constructors"] .race-list {
   display: none;
 }
 
+body[data-mode="standings"] .race-detail,
+body[data-mode="constructors"] .race-detail {
+  display: none !important;
+}
+
+body[data-mode="standings"] #constructors-section,
+body[data-mode="constructors"] #standings-section,
+body[data-mode="races"] .standings-section {
+  display: none !important;
+}
+
+body[data-mode="standings"] #standings-section,
+body[data-mode="constructors"] #constructors-section {
+  display: block !important;
+}
+
 .race-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 72px;

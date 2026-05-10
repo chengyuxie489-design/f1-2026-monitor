@@ -411,10 +411,16 @@ function renderMode() {
   document.body.dataset.mode = activeMode;
   els.modeButtons.forEach((button) => button.classList.toggle("active", button.dataset.mode === activeMode));
   els.raceDetails.forEach((section) => {
-    section.hidden = activeMode !== "races";
+    const showRaceDetail = activeMode === "races";
+    section.hidden = !showRaceDetail;
+    section.style.display = showRaceDetail ? "" : "none";
   });
-  els.standingsSection.hidden = activeMode !== "standings";
-  els.constructorsSection.hidden = activeMode !== "constructors";
+  const showDrivers = activeMode === "standings";
+  const showConstructors = activeMode === "constructors";
+  els.standingsSection.hidden = !showDrivers;
+  els.standingsSection.style.display = showDrivers ? "" : "none";
+  els.constructorsSection.hidden = !showConstructors;
+  els.constructorsSection.style.display = showConstructors ? "" : "none";
 }
 
 function setDataStatus(status) {
