@@ -241,6 +241,7 @@ let activeRace = races[races.length - 1];
 let activeView = "race";
 let activeMode = "races";
 let standings = [];
+let constructorStandings = [];
 const syncIntervalMs = 120000;
 let nextRefreshAt = Date.now() + syncIntervalMs;
 let isRefreshing = false;
@@ -280,6 +281,10 @@ const els = {
   standingsGrid: document.querySelector("#standings-grid"),
   standingsLeader: document.querySelector("#standings-leader"),
   standingsMeta: document.querySelector("#standings-meta"),
+  constructorsSection: document.querySelector("#constructors-section"),
+  constructorsGrid: document.querySelector("#constructors-grid"),
+  constructorsLeader: document.querySelector("#constructors-leader"),
+  constructorsMeta: document.querySelector("#constructors-meta"),
   statusText: document.querySelector("#status-text"),
   statusDot: document.querySelector(".status-dot"),
   refreshButton: document.querySelector("#refresh-button"),
@@ -332,6 +337,45 @@ function buildFallbackStandings() {
     .map((entry, index) => ({ ...entry, position: index + 1 }));
 }
 
+function buildFallbackConstructorStandings() {
+  const teams = new Map();
+  for (const race of fallbackRaces) {
+    for (const sessionRows of [race.race, race.sprintResult]) {
+      for (const row of sessionRows) {
+        if (!row[2]) continue;
+        const points = Number(row[5] || 0);
+        const current = teams.get(row[2]) || {
+          position: 0,
+          team: row[2],
+          teamColor: "909090",
+          points: 0,
+          wins: 0,
+          podiums: 0,
+          racePoints: 0,
+          sprintPoints: 0,
+          drivers: new Set()
+        };
+
+        current.points += points;
+        if (sessionRows === race.sprintResult) current.sprintPoints += points;
+        else current.racePoints += points;
+        if (sessionRows === race.race && row[0] === "1") current.wins += 1;
+        if (sessionRows === race.race && ["1", "2", "3"].includes(row[0])) current.podiums += 1;
+        if (row[1]) current.drivers.add(row[1]);
+        teams.set(row[2], current);
+      }
+    }
+  }
+
+  return Array.from(teams.values())
+    .sort((a, b) => b.points - a.points || b.wins - a.wins || a.team.localeCompare(b.team))
+    .map((entry, index) => ({
+      ...entry,
+      position: index + 1,
+      drivers: Array.from(entry.drivers).sort()
+    }));
+}
+
 function renderRaceList() {
   els.raceCount.textContent = races.length;
   els.raceList.innerHTML = races
@@ -370,6 +414,7 @@ function renderMode() {
     section.hidden = activeMode !== "races";
   });
   els.standingsSection.hidden = activeMode !== "standings";
+  els.constructorsSection.hidden = activeMode !== "constructors";
 }
 
 function setDataStatus(status) {
@@ -544,12 +589,56 @@ function renderStandings() {
     .join("");
 }
 
+function renderConstructorStandings() {
+  const rows = constructorStandings.length ? constructorStandings : buildFallbackConstructorStandings();
+  const leader = rows[0];
+  const updated = dataStatus.updatedAt
+    ? new Date(dataStatus.updatedAt).toLocaleString("zh-CN", { hour12: false })
+    : "离线缓存";
+
+  els.constructorsMeta.textContent = `按已完成的 ${races.length} 个大奖赛周和冲刺赛积分汇总 · ${updated}`;
+
+  if (!leader) {
+    els.constructorsLeader.innerHTML = `<span>当前领先车队</span><strong>暂无数据</strong><small>等待 OpenF1 更新。</small>`;
+    els.constructorsGrid.innerHTML = `<div class="empty-state">车队积分榜正在同步。</div>`;
+    return;
+  }
+
+  els.constructorsLeader.innerHTML = `
+    <span>当前领先车队</span>
+    <strong>${safeText(leader.team)}</strong>
+    <small>${safeText(leader.points)} 分 · ${safeText(leader.wins)} 胜 · ${safeText(leader.podiums)} 个领奖台</small>
+  `;
+
+  els.constructorsGrid.innerHTML = rows
+    .map((entry) => {
+      const drivers = Array.isArray(entry.drivers) ? entry.drivers.join(" / ") : "";
+      return `
+        <article class="standings-card constructor-card" style="--team-color:#${safeText(cleanHex(entry.teamColor))}">
+          <div class="rank-badge">${safeText(entry.position)}</div>
+          <div class="driver-cell">
+            <strong>${safeText(entry.team)}</strong>
+            <span>${safeText(drivers)}</span>
+          </div>
+          <div class="team-chip">
+            <span class="team-swatch"></span>
+            <span>正赛 ${safeText(entry.racePoints ?? 0)} 分</span>
+          </div>
+          <span class="wins-cell">冲刺 ${safeText(entry.sprintPoints ?? 0)} 分 · ${safeText(entry.podiums)} 台</span>
+          <div class="points-cell">${safeText(entry.points)}</div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
 function render() {
   renderRaceList();
   renderSummary();
   renderPodium();
   renderTable();
   renderStandings();
+  renderConstructorStandings();
   renderMode();
   setDataStatus(dataStatus);
 }
@@ -585,6 +674,7 @@ async function loadLiveData() {
 
     races = payload.races;
     standings = Array.isArray(payload.standings) ? payload.standings : [];
+    constructorStandings = Array.isArray(payload.constructorStandings) ? payload.constructorStandings : [];
     activeRace = races.find((race) => race.id === selectedId) || races[races.length - 1];
     setDataStatus({
       source: payload.source || "OpenF1 实时源",
@@ -592,6 +682,7 @@ async function loadLiveData() {
     });
   } catch (error) {
     if (!standings.length) standings = buildFallbackStandings();
+    if (!constructorStandings.length) constructorStandings = buildFallbackConstructorStandings();
     if (races === fallbackRaces) {
       setDataStatus({
         source: "内置缓存",
@@ -608,6 +699,7 @@ async function loadLiveData() {
 }
 
 standings = buildFallbackStandings();
+constructorStandings = buildFallbackConstructorStandings();
 loadLiveData();
 setInterval(loadLiveData, syncIntervalMs);
 setInterval(updateCountdown, 1000);

@@ -28,8 +28,9 @@
     <main class="dashboard">
       <aside class="race-rail" aria-label="已完赛比赛周">
         <div class="mode-switch" role="tablist" aria-label="页面视图">
-          <button class="mode-button active" type="button" data-mode="races">分站详情</button>
-          <button class="mode-button" type="button" data-mode="standings">车手积分榜</button>
+          <button class="mode-button active" type="button" data-mode="races">分站数据</button>
+          <button class="mode-button" type="button" data-mode="standings">车手积分</button>
+          <button class="mode-button" type="button" data-mode="constructors">车队积分</button>
         </div>
         <div class="rail-head">
           <span>已完赛比赛周</span>
@@ -130,6 +131,18 @@
             <div class="standings-leader" id="standings-leader"></div>
           </div>
           <div id="standings-grid" class="standings-grid"></div>
+        </section>
+
+        <section class="standings-section constructors-section" id="constructors-section" hidden>
+          <div class="standings-hero constructors-hero">
+            <div>
+              <p class="eyebrow">LIVE CONSTRUCTOR STANDINGS</p>
+              <h2>2026 车队实时积分榜</h2>
+              <p id="constructors-meta">按车队汇总已完成正赛与冲刺赛积分。</p>
+            </div>
+            <div class="standings-leader" id="constructors-leader"></div>
+          </div>
+          <div id="constructors-grid" class="standings-grid constructors-grid"></div>
         </section>
       </section>
     </main>

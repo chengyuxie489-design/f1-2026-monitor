@@ -358,7 +358,6 @@ function buildStandings(races) {
       addResultToStandings(table, result, sprintDrivers.get(result.driver_number), "sprint");
     }
 
-    delete race.standingsSource;
   }
 
   return Array.from(table.values())
@@ -369,6 +368,61 @@ function buildStandings(races) {
       points: Number(entry.points.toFixed(1)),
       racePoints: Number(entry.racePoints.toFixed(1)),
       sprintPoints: Number(entry.sprintPoints.toFixed(1))
+    }));
+}
+
+function addResultToConstructors(table, result, driver, sessionType) {
+  if (!driver) return;
+  const team = driver.team_name || "Unknown";
+  const current = table.get(team) || {
+    position: 0,
+    team,
+    teamColor: cleanTeamColor(driver.team_colour),
+    points: 0,
+    wins: 0,
+    podiums: 0,
+    racePoints: 0,
+    sprintPoints: 0,
+    drivers: new Set()
+  };
+
+  const points = Number(result.points || 0);
+  current.points += points;
+  if (sessionType === "sprint") current.sprintPoints += points;
+  else current.racePoints += points;
+
+  if (sessionType === "race" && result.position === 1) current.wins += 1;
+  if (sessionType === "race" && [1, 2, 3].includes(result.position)) current.podiums += 1;
+  current.teamColor = cleanTeamColor(driver.team_colour || current.teamColor);
+  current.drivers.add(driverName(driver));
+  table.set(team, current);
+}
+
+function buildConstructorStandings(races) {
+  const table = new Map();
+
+  for (const race of races) {
+    const raceDrivers = new Map((race.standingsSource?.raceDrivers || []).map((driver) => [driver.driver_number, driver]));
+    const sprintDrivers = new Map((race.standingsSource?.sprintDrivers || []).map((driver) => [driver.driver_number, driver]));
+
+    for (const result of race.standingsSource?.race || []) {
+      addResultToConstructors(table, result, raceDrivers.get(result.driver_number), "race");
+    }
+
+    for (const result of race.standingsSource?.sprint || []) {
+      addResultToConstructors(table, result, sprintDrivers.get(result.driver_number), "sprint");
+    }
+  }
+
+  return Array.from(table.values())
+    .sort((a, b) => b.points - a.points || b.wins - a.wins || b.podiums - a.podiums || a.team.localeCompare(b.team))
+    .map((entry, index) => ({
+      ...entry,
+      position: index + 1,
+      points: Number(entry.points.toFixed(1)),
+      racePoints: Number(entry.racePoints.toFixed(1)),
+      sprintPoints: Number(entry.sprintPoints.toFixed(1)),
+      drivers: Array.from(entry.drivers).sort()
     }));
 }
 
@@ -391,12 +445,15 @@ async function refreshData() {
     races.push(await buildRace(session, index, sprintSessions));
   }
   const standings = buildStandings(races);
+  const constructorStandings = buildConstructorStandings(races);
+  races.forEach((race) => delete race.standingsSource);
 
   const payload = {
     source: "OpenF1 实时源",
     updatedAt: new Date().toISOString(),
     races,
-    standings
+    standings,
+    constructorStandings
   };
 
   await fs.mkdir(cacheDir, { recursive: true });

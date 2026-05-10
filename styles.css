@@ -175,7 +175,7 @@ h1 {
 
 .mode-switch {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   padding: 14px;
   border-bottom: 1px solid var(--line);
@@ -672,6 +672,13 @@ tbody tr:hover {
     var(--race-image) center / cover;
 }
 
+.constructors-hero {
+  background:
+    linear-gradient(90deg, rgba(16, 17, 20, 0.95), rgba(16, 17, 20, 0.72)),
+    linear-gradient(135deg, color-mix(in srgb, var(--accent-2) 24%, transparent), transparent 54%),
+    var(--race-image) center / cover;
+}
+
 .standings-hero h2 {
   margin-bottom: 12px;
   font-size: clamp(34px, 5vw, 64px);
@@ -725,6 +732,12 @@ tbody tr:hover {
 .standings-card:hover {
   border-color: color-mix(in srgb, var(--accent) 70%, var(--line));
   background: #262933;
+}
+
+.constructor-card {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--team-color, var(--accent-2)) 20%, transparent), transparent 42%),
+    #20232b;
 }
 
 .rank-badge {
@@ -849,7 +862,8 @@ tbody tr:hover {
   .race-list,
   .metric-grid,
   .podium,
-  .local-facts {
+  .local-facts,
+  .mode-switch {
     grid-template-columns: 1fr;
   }
 
