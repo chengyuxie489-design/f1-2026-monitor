@@ -263,6 +263,52 @@ h1 {
   padding: 14px;
 }
 
+body[data-mode="standings"] .rail-head,
+body[data-mode="constructors"] .rail-head,
+body[data-mode="standings"] .race-list,
+body[data-mode="constructors"] .race-list {
+  display: none;
+}
+
+.rail-insights {
+  display: none;
+  gap: 10px;
+  padding: 14px;
+}
+
+body[data-mode="standings"] .rail-insights,
+body[data-mode="constructors"] .rail-insights {
+  display: grid;
+}
+
+.rail-insight {
+  display: none;
+  min-height: 118px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent 58%),
+    #20232b;
+}
+
+body[data-mode="standings"] .rail-insight[data-for-mode="standings"],
+body[data-mode="constructors"] .rail-insight[data-for-mode="constructors"] {
+  display: grid;
+  gap: 8px;
+}
+
+.rail-insight span,
+.rail-insight small {
+  color: var(--muted);
+}
+
+.rail-insight strong {
+  align-self: end;
+  font-size: 28px;
+  line-height: 1.05;
+}
+
 .race-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 72px;
@@ -740,15 +786,18 @@ tbody tr:hover {
   padding: clamp(22px, 4vw, 42px);
   border-bottom: 1px solid var(--line);
   background:
-    linear-gradient(90deg, rgba(16, 17, 20, 0.95), rgba(16, 17, 20, 0.74)),
-    var(--race-image) center / cover;
+    linear-gradient(90deg, rgba(16, 17, 20, 0.98), rgba(16, 17, 20, 0.82)),
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 24%, transparent), transparent 42%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 42px),
+    #15171c;
 }
 
 .constructors-hero {
   background:
-    linear-gradient(90deg, rgba(16, 17, 20, 0.95), rgba(16, 17, 20, 0.72)),
+    linear-gradient(90deg, rgba(16, 17, 20, 0.98), rgba(16, 17, 20, 0.82)),
     linear-gradient(135deg, color-mix(in srgb, var(--accent-2) 24%, transparent), transparent 54%),
-    var(--race-image) center / cover;
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 42px),
+    #15171c;
 }
 
 .standings-hero h2 {
