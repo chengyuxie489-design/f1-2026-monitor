@@ -174,6 +174,21 @@ h1 {
   padding: 0 clamp(20px, 4vw, 56px) 24px;
 }
 
+body[data-mode="standings"] {
+  --accent: #e10600;
+  --accent-2: #64d2ff;
+}
+
+body[data-mode="constructors"] {
+  --accent: #31d0aa;
+  --accent-2: #f1c75b;
+}
+
+body[data-mode="standings"] .dashboard,
+body[data-mode="constructors"] .dashboard {
+  grid-template-columns: minmax(190px, 230px) minmax(0, 1fr);
+}
+
 .race-rail,
 .race-panel,
 .panel,
@@ -268,45 +283,6 @@ body[data-mode="constructors"] .rail-head,
 body[data-mode="standings"] .race-list,
 body[data-mode="constructors"] .race-list {
   display: none;
-}
-
-.rail-insights {
-  display: none;
-  gap: 10px;
-  padding: 14px;
-}
-
-body[data-mode="standings"] .rail-insights,
-body[data-mode="constructors"] .rail-insights {
-  display: grid;
-}
-
-.rail-insight {
-  display: none;
-  min-height: 118px;
-  padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent 58%),
-    #20232b;
-}
-
-body[data-mode="standings"] .rail-insight[data-for-mode="standings"],
-body[data-mode="constructors"] .rail-insight[data-for-mode="constructors"] {
-  display: grid;
-  gap: 8px;
-}
-
-.rail-insight span,
-.rail-insight small {
-  color: var(--muted);
-}
-
-.rail-insight strong {
-  align-self: end;
-  font-size: 28px;
-  line-height: 1.05;
 }
 
 .race-card {
@@ -957,6 +933,8 @@ tbody tr:hover {
 
 @media (max-width: 1040px) {
   .dashboard,
+  body[data-mode="standings"] .dashboard,
+  body[data-mode="constructors"] .dashboard,
   .hero-grid,
   .content-grid,
   .standings-hero {

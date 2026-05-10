@@ -277,14 +277,6 @@ const els = {
   localFacts: document.querySelector("#local-facts"),
   modeButtons: document.querySelectorAll(".mode-button"),
   raceDetails: document.querySelectorAll(".race-detail"),
-  railHead: document.querySelector(".rail-head"),
-  railInsights: document.querySelector("#rail-insights"),
-  railDriverLeader: document.querySelector("#rail-driver-leader"),
-  railDriverMeta: document.querySelector("#rail-driver-meta"),
-  railDriverCount: document.querySelector("#rail-driver-count"),
-  railConstructorLeader: document.querySelector("#rail-constructor-leader"),
-  railConstructorMeta: document.querySelector("#rail-constructor-meta"),
-  railConstructorCount: document.querySelector("#rail-constructor-count"),
   standingsSection: document.querySelector("#standings-section"),
   standingsGrid: document.querySelector("#standings-grid"),
   standingsLeader: document.querySelector("#standings-leader"),
@@ -582,10 +574,6 @@ function renderStandings() {
     <strong>${safeText(leader.driver)}</strong>
     <small>${safeText(leader.team)} · ${safeText(leader.points)} 分 · ${safeText(leader.wins)} 个大奖赛胜场</small>
   `;
-  els.railDriverLeader.textContent = leader.driver;
-  els.railDriverMeta.textContent = `${leader.team} · ${leader.points} 分`;
-  els.railDriverCount.textContent = rows.length;
-
   els.standingsGrid.innerHTML = rows
     .map((entry) => {
       const score = Math.round(((Number(entry.points) || 0) / maxPoints) * 100);
@@ -630,10 +618,6 @@ function renderConstructorStandings() {
     <strong>${safeText(leader.team)}</strong>
     <small>${safeText(leader.points)} 分 · ${safeText(leader.wins)} 胜 · ${safeText(leader.podiums)} 个领奖台</small>
   `;
-  els.railConstructorLeader.textContent = leader.team;
-  els.railConstructorMeta.textContent = `${leader.points} 分 · ${leader.wins} 胜`;
-  els.railConstructorCount.textContent = rows.length;
-
   els.constructorsGrid.innerHTML = rows
     .map((entry) => {
       const drivers = Array.isArray(entry.drivers) ? entry.drivers.join(" / ") : "";
