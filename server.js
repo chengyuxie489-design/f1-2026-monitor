@@ -79,10 +79,11 @@ const calendarSchedule = [
 ];
 
 const profiles = {
-  Melbourne: ["墨尔本 · 公园与海湾", "#34b7b6", "#f2c24d", "https://commons.wikimedia.org/wiki/Special:FilePath/Melbourne%20skyline%20-%20Albert%20Park.jpg", "M46 118 C66 65 108 35 155 52 C198 68 246 44 270 78 C292 110 254 143 209 134 C172 127 154 156 113 146 C78 137 42 151 46 118", [46, 118]],
-  Shanghai: ["上海 · 嘉定速度场", "#e43d30", "#f7d45a", "https://commons.wikimedia.org/wiki/Special:FilePath/F-1%20Circuit%20Shanghai%20-%20panoramio.jpg", "M64 100 C68 50 135 45 150 86 C164 130 225 118 256 84 C283 58 303 94 277 126 C242 166 150 151 105 146 C70 143 44 126 64 100", [64, 100]],
-  Suzuka: ["铃鹿 · 山林技术课", "#d83b49", "#86c66b", "https://commons.wikimedia.org/wiki/Special:FilePath/Suzuka%20Circuit%20Main%20Straight.jpg", "M42 96 C78 46 120 54 142 89 C164 125 206 77 245 55 C284 35 300 86 265 111 C227 137 191 124 167 150 C141 179 82 161 59 133 C46 119 34 111 42 96", [42, 96]],
-  Miami: ["迈阿密 · 海岸娱乐周", "#ff5c8a", "#36d6d1", "https://commons.wikimedia.org/wiki/Special:FilePath/Miami%20skyline%20%281%29.jpg", "M36 104 C60 64 98 54 132 73 C164 91 194 68 224 62 C261 55 297 82 280 116 C262 153 205 143 175 126 C144 108 126 153 84 148 C52 145 25 130 36 104", [36, 104]]
+  Melbourne: ["墨尔本 · 公园与海湾", "#34b7b6", "#f2c24d", "https://commons.wikimedia.org/wiki/Special:FilePath/Melbourne%20skyline%20-%20Albert%20Park.jpg", "M46 118 C66 65 108 35 155 52 C198 68 246 44 270 78 C292 110 254 143 209 134 C172 127 154 156 113 146 C78 137 42 151 46 118", [46, 118], "https://commons.wikimedia.org/wiki/Special:FilePath/Albert%20Park%20Circuit%202021.svg"],
+  Shanghai: ["上海 · 嘉定速度场", "#e43d30", "#f7d45a", "https://commons.wikimedia.org/wiki/Special:FilePath/F-1%20Circuit%20Shanghai%20-%20panoramio.jpg", "M64 100 C68 50 135 45 150 86 C164 130 225 118 256 84 C283 58 303 94 277 126 C242 166 150 151 105 146 C70 143 44 126 64 100", [64, 100], "https://commons.wikimedia.org/wiki/Special:FilePath/Shanghai%20International%20Racing%20Circuit%20track%20map.svg"],
+  Suzuka: ["铃鹿 · 山林技术课", "#d83b49", "#86c66b", "https://commons.wikimedia.org/wiki/Special:FilePath/Suzuka%20Circuit%20Main%20Straight.jpg", "M42 96 C78 46 120 54 142 89 C164 125 206 77 245 55 C284 35 300 86 265 111 C227 137 191 124 167 150 C141 179 82 161 59 133 C46 119 34 111 42 96", [42, 96], "https://commons.wikimedia.org/wiki/Special:FilePath/Suzuka%20circuit%20map--2005.svg"],
+  Miami: ["迈阿密 · 海岸娱乐周", "#ff5c8a", "#36d6d1", "https://commons.wikimedia.org/wiki/Special:FilePath/Miami%20skyline%20%281%29.jpg", "M36 104 C60 64 98 54 132 73 C164 91 194 68 224 62 C261 55 297 82 280 116 C262 153 205 143 175 126 C144 108 126 153 84 148 C52 145 25 130 36 104", [36, 104], "https://commons.wikimedia.org/wiki/Special:FilePath/2022%20F1%20CourseLayout%20Miami.svg"],
+  Montreal: ["蒙特利尔 · 岛上高速战", "#f03638", "#31d0aa", "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80", "M44 98 C70 52 126 42 164 70 C195 93 228 54 268 78 C302 98 282 144 239 144 C193 144 180 120 144 142 C104 166 32 144 44 98", [44, 98], "https://commons.wikimedia.org/wiki/Special:FilePath/%C3%8Ele%20Notre-Dame%20%28Circuit%20Gilles%20Villeneuve%29.svg"]
 };
 
 let currentPayload = null;
@@ -201,8 +202,29 @@ function profileFor(session) {
     image: profile[3],
     track: profile[4],
     start: profile[5],
+    trackMapUrl: profile[6] || "",
     facts: [["数据状态", "实时同步", "比赛结果由 OpenF1 定时更新；网络波动时会保留最近一次可用快照。"]]
   };
+}
+
+function trackMapUrlForRace(race) {
+  const circuit = race?.local?.kicker || String(race?.circuit || "").split(",")[0].trim();
+  return profiles[circuit]?.[6] || "";
+}
+
+function enrichTrackMaps(races) {
+  return (races || []).map((race) => {
+    const trackMapUrl = race.trackMapUrl || race.local?.trackMapUrl || trackMapUrlForRace(race);
+    if (!trackMapUrl) return race;
+    return {
+      ...race,
+      trackMapUrl,
+      local: {
+        ...race.local,
+        trackMapUrl: race.local?.trackMapUrl || trackMapUrl
+      }
+    };
+  });
 }
 
 function calendarEntryFor(session) {
@@ -267,6 +289,7 @@ async function buildRace(session, index, sprintSessions) {
     local,
     track: local.track,
     start: local.start,
+    trackMapUrl: local.trackMapUrl,
     race: raceData.rows,
     fastest,
     sprintResult: sprintData?.rows || [],
@@ -331,7 +354,7 @@ function usablePayload(payload) {
 
 function annotate(payload, metadata = {}) {
   const updatedTime = payload?.updatedAt ? new Date(payload.updatedAt).getTime() : NaN;
-  return { source: payload?.source || "OpenF1 warming", updatedAt: payload?.updatedAt || null, races: payload?.races || [], standings: payload?.standings || [], constructorStandings: payload?.constructorStandings || [], calendar: payload?.calendar || [], syncStatus: metadata.syncStatus || payload?.syncStatus || "live", stale: metadata.stale ?? payload?.stale ?? false, lastSyncError: metadata.lastSyncError ?? payload?.lastSyncError ?? null, nextUpdateAt, cacheAgeMs: Number.isFinite(updatedTime) ? Math.max(0, Date.now() - updatedTime) : null };
+  return { source: payload?.source || "OpenF1 warming", updatedAt: payload?.updatedAt || null, races: enrichTrackMaps(payload?.races), standings: payload?.standings || [], constructorStandings: payload?.constructorStandings || [], calendar: payload?.calendar || [], syncStatus: metadata.syncStatus || payload?.syncStatus || "live", stale: metadata.stale ?? payload?.stale ?? false, lastSyncError: metadata.lastSyncError ?? payload?.lastSyncError ?? null, nextUpdateAt, cacheAgeMs: Number.isFinite(updatedTime) ? Math.max(0, Date.now() - updatedTime) : null };
 }
 
 async function readCacheFile(filePath) {

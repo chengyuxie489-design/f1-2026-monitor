@@ -26,6 +26,7 @@ const fallbackRaces = [
     },
     track: "M46 118 C66 65 108 35 155 52 C198 68 246 44 270 78 C292 110 254 143 209 134 C172 127 154 156 113 146 C78 137 42 151 46 118",
     start: [46, 118],
+    trackMapUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Albert%20Park%20Circuit%202021.svg",
     race: [
       ["1", "George Russell", "Mercedes", "57", "1:23:06.801", "25"],
       ["2", "Kimi Antonelli", "Mercedes", "57", "+2.974s", "18"],
@@ -80,6 +81,7 @@ const fallbackRaces = [
     },
     track: "M64 100 C68 50 135 45 150 86 C164 130 225 118 256 84 C283 58 303 94 277 126 C242 166 150 151 105 146 C70 143 44 126 64 100",
     start: [64, 100],
+    trackMapUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Shanghai%20International%20Racing%20Circuit%20track%20map.svg",
     race: [
       ["1", "Kimi Antonelli", "Mercedes", "56", "1:33:15.607", "25"],
       ["2", "George Russell", "Mercedes", "56", "+5.515s", "18"],
@@ -144,6 +146,7 @@ const fallbackRaces = [
     },
     track: "M42 96 C78 46 120 54 142 89 C164 125 206 77 245 55 C284 35 300 86 265 111 C227 137 191 124 167 150 C141 179 82 161 59 133 C46 119 34 111 42 96",
     start: [42, 96],
+    trackMapUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Suzuka%20circuit%20map--2005.svg",
     race: [
       ["1", "Kimi Antonelli", "Mercedes", "53", "1:28:03.403", "25"],
       ["2", "Oscar Piastri", "McLaren", "53", "+13.722s", "18"],
@@ -197,6 +200,7 @@ const fallbackRaces = [
     },
     track: "M36 104 C60 64 98 54 132 73 C164 91 194 68 224 62 C261 55 297 82 280 116 C262 153 205 143 175 126 C144 108 126 153 84 148 C52 145 25 130 36 104",
     start: [36, 104],
+    trackMapUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/2022%20F1%20CourseLayout%20Miami.svg",
     race: [
       ["1", "Kimi Antonelli", "Mercedes", "57", "1:33:19.273", "25"],
       ["2", "Lando Norris", "McLaren", "57", "+3.264s", "18"],
@@ -257,6 +261,8 @@ const els = {
   raceName: document.querySelector("#race-name"),
   raceMeta: document.querySelector("#race-meta"),
   tagRow: document.querySelector("#tag-row"),
+  trackMap: document.querySelector("#track-map"),
+  trackImage: document.querySelector("#track-image"),
   trackPath: document.querySelector("#track-path"),
   trackPathShadow: document.querySelector("#track-path-shadow"),
   trackStart: document.querySelector("#track-start"),
@@ -301,6 +307,12 @@ function safeText(value) {
 
 function cleanHex(value) {
   return String(value || "909090").replace(/^#/, "").slice(0, 6) || "909090";
+}
+
+function setHidden(element, hidden) {
+  if (!element) return;
+  if (hidden) element.setAttribute("hidden", "");
+  else element.removeAttribute("hidden");
 }
 
 function teamLogoSpec(team) {
@@ -466,6 +478,7 @@ function renderRaceList() {
   els.raceList.innerHTML = races
     .map((race) => {
       const winner = race.race?.[0] || ["", "待确认", "", "", ""];
+      const trackMapUrl = race.trackMapUrl || race.local?.trackMapUrl || "";
       return `
         <button class="race-card ${race.id === activeRace.id ? "active" : ""}" type="button" data-race="${race.id}">
           <div class="race-card-main">
@@ -479,7 +492,8 @@ function renderRaceList() {
               <small>${safeText(winner[1])} · ${safeText(winner[4])}</small>
             </div>
           </div>
-          <svg viewBox="0 0 320 180" aria-hidden="true">
+          ${trackMapUrl ? `<img class="race-card-track-image" src="${safeText(trackMapUrl)}" alt="" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.removeAttribute('hidden')">` : ""}
+          <svg viewBox="0 0 320 180" aria-hidden="true" ${trackMapUrl ? "hidden" : ""}>
             <path d="${safeText(race.track)}"></path>
           </svg>
         </button>
@@ -560,6 +574,20 @@ function renderSummary() {
   els.trackPathShadow.setAttribute("d", activeRace.track);
   els.trackStart.setAttribute("cx", activeRace.start[0]);
   els.trackStart.setAttribute("cy", activeRace.start[1]);
+  const trackMapUrl = activeRace.trackMapUrl || activeRace.local?.trackMapUrl || "";
+  if (trackMapUrl && els.trackImage && els.trackMap) {
+    setHidden(els.trackImage, false);
+    setHidden(els.trackMap, true);
+    els.trackImage.onerror = () => {
+      setHidden(els.trackImage, true);
+      setHidden(els.trackMap, false);
+    };
+    if (els.trackImage.src !== trackMapUrl) els.trackImage.src = trackMapUrl;
+  } else if (els.trackImage && els.trackMap) {
+    setHidden(els.trackImage, true);
+    setHidden(els.trackMap, false);
+    els.trackImage.removeAttribute("src");
+  }
 
   els.winner.textContent = podium[0][1];
   els.winnerTeam.textContent = podium[0][2];

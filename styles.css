@@ -335,7 +335,8 @@ body[data-mode="constructors"] #constructors-section {
   min-width: 0;
 }
 
-.race-card svg {
+.race-card svg,
+.race-card-track-image {
   align-self: center;
   width: 72px;
   height: 54px;
@@ -343,6 +344,17 @@ body[data-mode="constructors"] #constructors-section {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.16);
+}
+
+.race-card-track-image {
+  object-fit: contain;
+  filter: brightness(0) invert(1) drop-shadow(0 0 9px color-mix(in srgb, var(--accent) 34%, transparent));
+  opacity: 0.76;
+}
+
+.race-card.active .race-card-track-image,
+.race-card:hover .race-card-track-image {
+  opacity: 1;
 }
 
 .race-card path {
@@ -480,9 +492,22 @@ body[data-mode="constructors"] #constructors-section {
     #15171c;
 }
 
-.track-visual svg {
+.track-map-vector,
+.track-map-image {
   width: min(100%, 360px);
   aspect-ratio: 16 / 9;
+}
+
+.track-map-image {
+  display: block;
+  max-height: 240px;
+  object-fit: contain;
+  filter: brightness(0) invert(1) drop-shadow(0 0 22px color-mix(in srgb, var(--accent) 45%, transparent));
+}
+
+.track-map-image[hidden],
+.track-map-vector[hidden] {
+  display: none;
 }
 
 #track-path-shadow {
