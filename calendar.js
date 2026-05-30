@@ -28,6 +28,8 @@ const f1CalendarRaces = [
 const earthTextureUrl = "https://cdn.jsdelivr.net/gh/mrdoob/three.js@r160/examples/textures/land_ocean_ice_cloud_2048.jpg";
 let globeState = null;
 let liveCompletedHints = new Set();
+let liveCalendarStatuses = new Map();
+let liveCalendarSynced = false;
 
 function calendarSafe(value) {
   return String(value ?? "").replace(/[&<>"']/g, (char) => ({
@@ -39,13 +41,26 @@ function calendarSafe(value) {
   })[char]);
 }
 
-function calendarRaceCompleted(race) {
-  if (new Date(`${race.date}T23:59:59`).getTime() <= Date.now()) return true;
-  return liveCompletedHints.has(race.slug) || liveCompletedHints.has(race.city.toLowerCase()) || liveCompletedHints.has(race.country.toLowerCase());
+function calendarRaceStatus(race) {
+  const liveStatus = liveCalendarStatuses.get(race.slug) || liveCalendarStatuses.get(String(race.round));
+  if (liveStatus) return liveStatus;
+  if (liveCalendarSynced) {
+    return liveCompletedHints.has(race.slug) || liveCompletedHints.has(race.city.toLowerCase()) || liveCompletedHints.has(race.country.toLowerCase())
+      ? "completed"
+      : "scheduled";
+  }
+  return new Date(`${race.date}T23:59:59`).getTime() <= Date.now() ? "completed" : "scheduled";
 }
 
 function calendarRows() {
-  return f1CalendarRaces.map((race) => ({ ...race, completed: calendarRaceCompleted(race) }));
+  return f1CalendarRaces.map((race) => {
+    const status = calendarRaceStatus(race);
+    return { ...race, status, completed: status === "completed", cancelled: status === "cancelled" };
+  });
+}
+
+function calendarStatusLabel(status) {
+  return ({ completed: "已完赛", cancelled: "已取消", "pending-results": "待结果", scheduled: "待举行" })[status] || "待举行";
 }
 
 async function syncCompletedCalendarRaces() {
@@ -55,6 +70,14 @@ async function syncCompletedCalendarRaces() {
     const payload = await response.json();
     if (!Array.isArray(payload.races)) return;
     liveCompletedHints = new Set();
+    liveCalendarStatuses = new Map();
+    liveCalendarSynced = true;
+    if (Array.isArray(payload.calendar)) {
+      payload.calendar.forEach((race) => {
+        if (race.slug && race.status) liveCalendarStatuses.set(race.slug, race.status);
+        if (race.round && race.status) liveCalendarStatuses.set(String(race.round), race.status);
+      });
+    }
     payload.races.forEach((race) => {
       `${race.id || ""} ${race.name || ""} ${race.officialName || ""} ${race.circuit || ""} ${race.local?.kicker || ""}`
         .toLowerCase()
@@ -173,7 +196,7 @@ function updateGlobeMarkers() {
 
   calendarRows().forEach((race) => {
     const position = latLonToVector(race.lat, race.lon);
-    const color = race.completed ? "#f1c75b" : "#64d2ff";
+    const color = race.cancelled ? "#8f98aa" : race.completed ? "#f1c75b" : "#64d2ff";
     const marker = new THREE.Mesh(new THREE.SphereGeometry(race.completed ? 0.055 : 0.043, 18, 18), new THREE.MeshBasicMaterial({ color }));
     marker.position.copy(position);
     globeState.markerGroup.add(marker);
@@ -187,7 +210,7 @@ function updateGlobeMarkers() {
 
     const label = document.createElement("button");
     label.type = "button";
-    label.className = `globe-label ${race.completed ? "completed" : ""}`;
+    label.className = `globe-label ${race.status}`;
     label.innerHTML = `<span>R${race.round}</span>${calendarSafe(race.city)}`;
     label.addEventListener("click", () => focusGlobeRace(race));
     globeState.labelLayer.appendChild(label);
@@ -235,10 +258,10 @@ function renderCalendarStrip() {
   const strip = document.querySelector("#calendar-strip");
   if (!strip) return;
   strip.innerHTML = calendarRows().map((race) => `
-    <button class="calendar-card ${race.completed ? "completed" : ""}" type="button" data-round="${race.round}">
+    <button class="calendar-card ${race.status}" type="button" data-round="${race.round}">
       <span>R${calendarSafe(race.round)}</span>
       <strong>${calendarSafe(race.name)}</strong>
-      <small>${calendarSafe(race.city)} · ${calendarSafe(race.date)}</small>
+      <small>${calendarSafe(race.city)} · ${calendarSafe(race.date)} · ${calendarSafe(calendarStatusLabel(race.status))}</small>
     </button>
   `).join("");
 

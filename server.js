@@ -7,6 +7,7 @@ const root = __dirname;
 const port = Number(process.env.PORT || 4173);
 const cacheDir = path.join(root, "data");
 const cacheFile = path.join(cacheDir, "races-live.json");
+const seedCacheFile = path.join(root, "races-live.json");
 const updateIntervalMs = Number(process.env.UPDATE_INTERVAL_MS || 120000);
 const openF1 = "https://api.openf1.org/v1";
 const apiCache = new Map();
@@ -49,6 +50,33 @@ const raceNameByCircuit = {
   Lusail: "卡塔尔大奖赛",
   "Yas Marina Circuit": "阿布扎比大奖赛"
 };
+
+const calendarSchedule = [
+  { round: 1, slug: "australia", circuitShortName: "Melbourne", countryCode: "AUS", city: "Melbourne", country: "Australia", date: "2026-03-08", name: "澳大利亚大奖赛", englishName: "FORMULA 1 AUSTRALIAN GRAND PRIX 2026" },
+  { round: 2, slug: "china", circuitShortName: "Shanghai", countryCode: "CHN", city: "Shanghai", country: "China", date: "2026-03-15", name: "中国大奖赛", englishName: "FORMULA 1 CHINESE GRAND PRIX 2026" },
+  { round: 3, slug: "japan", circuitShortName: "Suzuka", countryCode: "JPN", city: "Suzuka", country: "Japan", date: "2026-03-29", name: "日本大奖赛", englishName: "FORMULA 1 JAPANESE GRAND PRIX 2026" },
+  { round: 4, slug: "bahrain", circuitShortName: "Sakhir", countryCode: "BRN", city: "Sakhir", country: "Bahrain", date: "2026-04-12", name: "巴林大奖赛", englishName: "FORMULA 1 BAHRAIN GRAND PRIX 2026" },
+  { round: 5, slug: "saudi-arabia", circuitShortName: "Jeddah", countryCode: "KSA", city: "Jeddah", country: "Saudi Arabia", date: "2026-04-19", name: "沙特阿拉伯大奖赛", englishName: "FORMULA 1 SAUDI ARABIAN GRAND PRIX 2026" },
+  { round: 6, slug: "miami", circuitShortName: "Miami", countryCode: "USA", city: "Miami", country: "United States", date: "2026-05-03", name: "迈阿密大奖赛", englishName: "FORMULA 1 MIAMI GRAND PRIX 2026" },
+  { round: 7, slug: "canada", circuitShortName: "Montreal", countryCode: "CAN", city: "Montreal", country: "Canada", date: "2026-05-24", name: "加拿大大奖赛", englishName: "FORMULA 1 CANADIAN GRAND PRIX 2026" },
+  { round: 8, slug: "monaco", circuitShortName: "Monte Carlo", countryCode: "MON", city: "Monte Carlo", country: "Monaco", date: "2026-06-07", name: "摩纳哥大奖赛", englishName: "FORMULA 1 MONACO GRAND PRIX 2026" },
+  { round: 9, slug: "spain", circuitShortName: "Catalunya", countryCode: "ESP", city: "Barcelona", country: "Spain", date: "2026-06-14", name: "西班牙大奖赛", englishName: "FORMULA 1 SPANISH GRAND PRIX 2026" },
+  { round: 10, slug: "austria", circuitShortName: "Spielberg", countryCode: "AUT", city: "Spielberg", country: "Austria", date: "2026-06-28", name: "奥地利大奖赛", englishName: "FORMULA 1 AUSTRIAN GRAND PRIX 2026" },
+  { round: 11, slug: "britain", circuitShortName: "Silverstone", countryCode: "GBR", city: "Silverstone", country: "United Kingdom", date: "2026-07-05", name: "英国大奖赛", englishName: "FORMULA 1 BRITISH GRAND PRIX 2026" },
+  { round: 12, slug: "belgium", circuitShortName: "Spa-Francorchamps", countryCode: "BEL", city: "Spa-Francorchamps", country: "Belgium", date: "2026-07-19", name: "比利时大奖赛", englishName: "FORMULA 1 BELGIAN GRAND PRIX 2026" },
+  { round: 13, slug: "hungary", circuitShortName: "Hungaroring", countryCode: "HUN", city: "Budapest", country: "Hungary", date: "2026-07-26", name: "匈牙利大奖赛", englishName: "FORMULA 1 HUNGARIAN GRAND PRIX 2026" },
+  { round: 14, slug: "netherlands", circuitShortName: "Zandvoort", countryCode: "NED", city: "Zandvoort", country: "Netherlands", date: "2026-08-23", name: "荷兰大奖赛", englishName: "FORMULA 1 DUTCH GRAND PRIX 2026" },
+  { round: 15, slug: "italy", circuitShortName: "Monza", countryCode: "ITA", city: "Monza", country: "Italy", date: "2026-09-06", name: "意大利大奖赛", englishName: "FORMULA 1 ITALIAN GRAND PRIX 2026" },
+  { round: 16, slug: "spain-madrid", circuitShortName: "Madring", countryCode: "ESP", city: "Madrid", country: "Spain", date: "2026-09-13", name: "马德里大奖赛", englishName: "FORMULA 1 MADRID GRAND PRIX 2026" },
+  { round: 17, slug: "azerbaijan", circuitShortName: "Baku", countryCode: "AZE", city: "Baku", country: "Azerbaijan", date: "2026-09-27", name: "阿塞拜疆大奖赛", englishName: "FORMULA 1 AZERBAIJAN GRAND PRIX 2026" },
+  { round: 18, slug: "singapore", circuitShortName: "Singapore", countryCode: "SGP", city: "Singapore", country: "Singapore", date: "2026-10-11", name: "新加坡大奖赛", englishName: "FORMULA 1 SINGAPORE GRAND PRIX 2026" },
+  { round: 19, slug: "usa", circuitShortName: "Austin", countryCode: "USA", city: "Austin", country: "United States", date: "2026-10-25", name: "美国大奖赛", englishName: "FORMULA 1 UNITED STATES GRAND PRIX 2026" },
+  { round: 20, slug: "mexico", circuitShortName: "Mexico City", countryCode: "MEX", city: "Mexico City", country: "Mexico", date: "2026-11-01", name: "墨西哥城大奖赛", englishName: "FORMULA 1 MEXICO CITY GRAND PRIX 2026" },
+  { round: 21, slug: "brazil", circuitShortName: "Interlagos", countryCode: "BRA", city: "Sao Paulo", country: "Brazil", date: "2026-11-08", name: "圣保罗大奖赛", englishName: "FORMULA 1 SAO PAULO GRAND PRIX 2026" },
+  { round: 22, slug: "las-vegas", circuitShortName: "Las Vegas", countryCode: "USA", city: "Las Vegas", country: "United States", date: "2026-11-21", name: "拉斯维加斯大奖赛", englishName: "FORMULA 1 LAS VEGAS GRAND PRIX 2026" },
+  { round: 23, slug: "qatar", circuitShortName: "Lusail", countryCode: "QAT", city: "Lusail", country: "Qatar", date: "2026-11-29", name: "卡塔尔大奖赛", englishName: "FORMULA 1 QATAR GRAND PRIX 2026" },
+  { round: 24, slug: "abu-dhabi", circuitShortName: "Yas Marina Circuit", countryCode: "UAE", city: "Abu Dhabi", country: "United Arab Emirates", date: "2026-12-06", name: "阿布扎比大奖赛", englishName: "FORMULA 1 ABU DHABI GRAND PRIX 2026" }
+];
 
 const profiles = {
   Melbourne: ["墨尔本 · 公园与海湾", "#34b7b6", "#f2c24d", "https://commons.wikimedia.org/wiki/Special:FilePath/Melbourne%20skyline%20-%20Albert%20Park.jpg", "M46 118 C66 65 108 35 155 52 C198 68 246 44 270 78 C292 110 254 143 209 134 C172 127 154 156 113 146 C78 137 42 151 46 118", [46, 118]],
@@ -104,9 +132,12 @@ function cleanTeamColor(color) {
 function secondsToRaceTime(seconds) {
   if (seconds == null || Number.isNaN(Number(seconds))) return "";
   const ms = Math.round(Number(seconds) * 1000);
-  const minutes = Math.floor(ms / 60000);
+  const hours = Math.floor(ms / 3600000);
+  const minutes = Math.floor((ms % 3600000) / 60000);
   const secs = Math.floor((ms % 60000) / 1000);
-  return `${minutes}:${String(secs).padStart(2, "0")}.${String(ms % 1000).padStart(3, "0")}`;
+  const tail = `${String(secs).padStart(2, "0")}.${String(ms % 1000).padStart(3, "0")}`;
+  if (hours) return `${hours}:${String(minutes).padStart(2, "0")}:${tail}`;
+  return `${minutes}:${tail}`;
 }
 
 function formatGap(result, winnerDuration) {
@@ -174,6 +205,37 @@ function profileFor(session) {
   };
 }
 
+function calendarEntryFor(session) {
+  return calendarSchedule.find((entry) => entry.circuitShortName === session.circuit_short_name)
+    || calendarSchedule.find((entry) => entry.countryCode === session.country_code && entry.city === session.location)
+    || null;
+}
+
+function buildCalendarStatus(raceSessions, completedSessions) {
+  const completedKeys = new Set(completedSessions.map((session) => session.session_key));
+  return calendarSchedule.map((entry) => {
+    const session = raceSessions.find((item) => calendarEntryFor(item)?.slug === entry.slug);
+    let status = "scheduled";
+    if (session?.is_cancelled) status = "cancelled";
+    else if (session && completedKeys.has(session.session_key)) status = "completed";
+    else if (new Date(`${entry.date}T23:59:59Z`).getTime() < Date.now()) status = "pending-results";
+
+    return {
+      round: entry.round,
+      slug: entry.slug,
+      name: entry.name,
+      city: entry.city,
+      country: entry.country,
+      date: entry.date,
+      status,
+      completed: status === "completed",
+      cancelled: status === "cancelled",
+      meetingKey: session?.meeting_key || null,
+      sessionKey: session?.session_key || null
+    };
+  });
+}
+
 async function buildRace(session, index, sprintSessions) {
   const raceData = await sessionRows(session.session_key);
   const sprintSession = sprintSessions.find((item) => item.meeting_key === session.meeting_key);
@@ -182,7 +244,8 @@ async function buildRace(session, index, sprintSessions) {
     sprintSession ? sessionRows(sprintSession.session_key).catch(() => null) : null
   ]);
   const local = profileFor(session);
-  const date = new Intl.DateTimeFormat("zh-CN", { timeZone: "UTC", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(session.date_start));
+  const calendarEntry = calendarEntryFor(session);
+  const date = calendarEntry?.date || new Intl.DateTimeFormat("zh-CN", { timeZone: "UTC", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(session.date_start));
   const winner = raceData.rows[0]?.[1] || "待确认";
   const second = raceData.rows[1]?.[1] || "第二名";
   const third = raceData.rows[2]?.[1] || "第三名";
@@ -191,9 +254,9 @@ async function buildRace(session, index, sprintSessions) {
     id: `${session.country_code.toLowerCase()}-${session.meeting_key}`,
     meetingKey: session.meeting_key,
     sessionKey: session.session_key,
-    round: index + 1,
-    name: raceNameByCircuit[session.circuit_short_name] || `${session.country_name}大奖赛`,
-    officialName: `FORMULA 1 ${session.country_name.toUpperCase()} GRAND PRIX 2026`,
+    round: calendarEntry?.round || index + 1,
+    name: calendarEntry?.name || raceNameByCircuit[session.circuit_short_name] || `${session.country_name}大奖赛`,
+    officialName: calendarEntry?.englishName || `FORMULA 1 ${session.country_name.toUpperCase()} GRAND PRIX 2026`,
     date,
     circuit: `${session.circuit_short_name}, ${session.location}`,
     laps: Number(raceData.results.find((result) => result.position === 1)?.number_of_laps || 0),
@@ -268,18 +331,22 @@ function usablePayload(payload) {
 
 function annotate(payload, metadata = {}) {
   const updatedTime = payload?.updatedAt ? new Date(payload.updatedAt).getTime() : NaN;
-  return { source: payload?.source || "OpenF1 warming", updatedAt: payload?.updatedAt || null, races: payload?.races || [], standings: payload?.standings || [], constructorStandings: payload?.constructorStandings || [], syncStatus: metadata.syncStatus || payload?.syncStatus || "live", stale: metadata.stale ?? payload?.stale ?? false, lastSyncError: metadata.lastSyncError ?? payload?.lastSyncError ?? null, nextUpdateAt, cacheAgeMs: Number.isFinite(updatedTime) ? Math.max(0, Date.now() - updatedTime) : null };
+  return { source: payload?.source || "OpenF1 warming", updatedAt: payload?.updatedAt || null, races: payload?.races || [], standings: payload?.standings || [], constructorStandings: payload?.constructorStandings || [], calendar: payload?.calendar || [], syncStatus: metadata.syncStatus || payload?.syncStatus || "live", stale: metadata.stale ?? payload?.stale ?? false, lastSyncError: metadata.lastSyncError ?? payload?.lastSyncError ?? null, nextUpdateAt, cacheAgeMs: Number.isFinite(updatedTime) ? Math.max(0, Date.now() - updatedTime) : null };
+}
+
+async function readCacheFile(filePath) {
+  if (!existsSync(filePath)) return null;
+  try {
+    const payload = JSON.parse(await fs.readFile(filePath, "utf8"));
+    return usablePayload(payload) ? payload : null;
+  } catch (error) {
+    console.warn(`[sync] cache read failed (${path.basename(filePath)}): ${error.message}`);
+    return null;
+  }
 }
 
 async function readCache() {
-  if (!existsSync(cacheFile)) return null;
-  try {
-    const payload = JSON.parse(await fs.readFile(cacheFile, "utf8"));
-    return usablePayload(payload) ? payload : null;
-  } catch (error) {
-    console.warn(`[sync] cache read failed: ${error.message}`);
-    return null;
-  }
+  return await readCacheFile(cacheFile) || await readCacheFile(seedCacheFile);
 }
 
 async function writeCache(payload) {
@@ -317,8 +384,9 @@ async function refreshData() {
   }
 
   const { standings, constructorStandings } = buildStandings(races);
+  const calendar = buildCalendarStatus(raceSessions, completed);
   races.forEach((race) => delete race.standingsSource);
-  const payload = { source: "OpenF1 实时源", updatedAt: new Date().toISOString(), races, standings, constructorStandings };
+  const payload = { source: "OpenF1 实时源", updatedAt: new Date().toISOString(), races, standings, constructorStandings, calendar };
   if (races.length) await writeCache(payload);
   console.log(`[sync] updated ${races.length} races at ${payload.updatedAt}`);
   return payload;
@@ -394,7 +462,7 @@ async function serveStatic(request, response) {
 
 const server = http.createServer((request, response) => {
   if (request.url.startsWith("/api/health")) {
-    json(response, 200, { ok: true, source: currentPayload?.source || "warming", syncStatus: currentPayload?.syncStatus || "warming", stale: Boolean(currentPayload?.stale), lastSyncError, nextUpdateAt, updatedAt: currentPayload?.updatedAt || null, races: currentPayload?.races?.length || 0, standings: currentPayload?.standings?.length || 0, constructorStandings: currentPayload?.constructorStandings?.length || 0 });
+    json(response, 200, { ok: true, source: currentPayload?.source || "warming", syncStatus: currentPayload?.syncStatus || "warming", stale: Boolean(currentPayload?.stale), lastSyncError, nextUpdateAt, updatedAt: currentPayload?.updatedAt || null, races: currentPayload?.races?.length || 0, standings: currentPayload?.standings?.length || 0, constructorStandings: currentPayload?.constructorStandings?.length || 0, calendar: currentPayload?.calendar?.length || 0 });
     return;
   }
   if (request.url.startsWith("/api/races")) {

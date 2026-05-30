@@ -103,6 +103,19 @@ body[data-mode="calendar"] #calendar-section {
   padding: 1px 5px;
 }
 
+.globe-label.cancelled {
+  border-color: rgba(143, 152, 170, 0.58);
+  color: #d7dce7;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+.globe-label.cancelled span {
+  color: #10141d;
+  background: #8f98aa;
+  border-radius: 999px;
+  padding: 1px 5px;
+}
+
 .globe-hud {
   position: absolute;
   left: clamp(18px, 3vw, 34px);
@@ -159,6 +172,11 @@ body[data-mode="calendar"] #calendar-section {
   box-shadow: 0 0 16px rgba(100, 210, 255, 0.46);
 }
 
+.globe-legend .cancelled {
+  background: #8f98aa;
+  box-shadow: 0 0 16px rgba(143, 152, 170, 0.36);
+}
+
 .calendar-strip {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -205,6 +223,18 @@ body[data-mode="calendar"] #calendar-section {
   background: var(--accent-2);
 }
 
+.calendar-card.cancelled {
+  border-color: rgba(143, 152, 170, 0.58);
+  background:
+    linear-gradient(120deg, rgba(143, 152, 170, 0.16), transparent 52%),
+    #20232b;
+}
+
+.calendar-card.cancelled span {
+  color: #10141d;
+  background: #8f98aa;
+}
+
 .calendar-card strong,
 .calendar-card small {
   grid-column: 2;
@@ -241,8 +271,6 @@ body[data-mode="calendar"] #calendar-section {
   }
 
   .globe-label {
-    min-height: 24px;
-    padding: 0 7px;
-    font-size: 11px;
+    display: none;
   }
 }
