@@ -261,8 +261,6 @@ const els = {
   raceName: document.querySelector("#race-name"),
   raceMeta: document.querySelector("#race-meta"),
   tagRow: document.querySelector("#tag-row"),
-  trackMap: document.querySelector("#track-map"),
-  trackImage: document.querySelector("#track-image"),
   trackPath: document.querySelector("#track-path"),
   trackPathShadow: document.querySelector("#track-path-shadow"),
   trackStart: document.querySelector("#track-start"),
@@ -307,12 +305,6 @@ function safeText(value) {
 
 function cleanHex(value) {
   return String(value || "909090").replace(/^#/, "").slice(0, 6) || "909090";
-}
-
-function setHidden(element, hidden) {
-  if (!element) return;
-  if (hidden) element.setAttribute("hidden", "");
-  else element.removeAttribute("hidden");
 }
 
 function teamLogoSpec(team) {
@@ -478,7 +470,6 @@ function renderRaceList() {
   els.raceList.innerHTML = races
     .map((race) => {
       const winner = race.race?.[0] || ["", "待确认", "", "", ""];
-      const trackMapUrl = race.trackMapUrl || race.local?.trackMapUrl || "";
       return `
         <button class="race-card ${race.id === activeRace.id ? "active" : ""}" type="button" data-race="${race.id}">
           <div class="race-card-main">
@@ -492,8 +483,7 @@ function renderRaceList() {
               <small>${safeText(winner[1])} · ${safeText(winner[4])}</small>
             </div>
           </div>
-          ${trackMapUrl ? `<img class="race-card-track-image" src="${safeText(trackMapUrl)}" alt="" loading="lazy" onerror="this.hidden=true; this.nextElementSibling.removeAttribute('hidden')">` : ""}
-          <svg viewBox="0 0 320 180" aria-hidden="true" ${trackMapUrl ? "hidden" : ""}>
+          <svg class="race-card-track" viewBox="0 0 320 180" aria-hidden="true">
             <path d="${safeText(race.track)}"></path>
           </svg>
         </button>
@@ -574,20 +564,6 @@ function renderSummary() {
   els.trackPathShadow.setAttribute("d", activeRace.track);
   els.trackStart.setAttribute("cx", activeRace.start[0]);
   els.trackStart.setAttribute("cy", activeRace.start[1]);
-  const trackMapUrl = activeRace.trackMapUrl || activeRace.local?.trackMapUrl || "";
-  if (trackMapUrl && els.trackImage && els.trackMap) {
-    setHidden(els.trackImage, false);
-    setHidden(els.trackMap, true);
-    els.trackImage.onerror = () => {
-      setHidden(els.trackImage, true);
-      setHidden(els.trackMap, false);
-    };
-    if (els.trackImage.src !== trackMapUrl) els.trackImage.src = trackMapUrl;
-  } else if (els.trackImage && els.trackMap) {
-    setHidden(els.trackImage, true);
-    setHidden(els.trackMap, false);
-    els.trackImage.removeAttribute("src");
-  }
 
   els.winner.textContent = podium[0][1];
   els.winnerTeam.textContent = podium[0][2];

@@ -303,11 +303,10 @@ body[data-mode="constructors"] #constructors-section {
 
 .race-card {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 72px;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr);
   width: 100%;
   min-height: 98px;
-  padding: 14px;
+  padding: 14px 16px;
   position: relative;
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
@@ -333,43 +332,34 @@ body[data-mode="constructors"] #constructors-section {
   display: grid;
   gap: 8px;
   min-width: 0;
+  position: relative;
+  z-index: 1;
 }
 
-.race-card svg,
-.race-card-track-image {
-  align-self: center;
-  width: 72px;
-  height: 54px;
-  padding: 5px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.16);
-}
-
-.race-card-track-image {
-  object-fit: contain;
-  filter: brightness(0) invert(1) drop-shadow(0 0 9px color-mix(in srgb, var(--accent) 34%, transparent));
-  opacity: 0.76;
-}
-
-.race-card.active .race-card-track-image,
-.race-card:hover .race-card-track-image {
-  opacity: 1;
+.race-card-track {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  z-index: 0;
+  width: 112px;
+  height: 66px;
+  pointer-events: none;
+  opacity: 0.24;
+  filter: drop-shadow(0 0 13px color-mix(in srgb, var(--accent) 28%, transparent));
 }
 
 .race-card path {
   fill: none;
-  stroke: var(--muted);
-  stroke-width: 9;
+  stroke: color-mix(in srgb, var(--accent-2) 58%, var(--muted));
+  stroke-width: 8;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.64;
+  opacity: 1;
 }
 
-.race-card.active path,
-.race-card:hover path {
-  stroke: var(--accent);
-  opacity: 1;
+.race-card.active .race-card-track,
+.race-card:hover .race-card-track {
+  opacity: 0.38;
 }
 
 .race-card:hover,
@@ -492,22 +482,9 @@ body[data-mode="constructors"] #constructors-section {
     #15171c;
 }
 
-.track-map-vector,
-.track-map-image {
+.track-visual svg {
   width: min(100%, 360px);
   aspect-ratio: 16 / 9;
-}
-
-.track-map-image {
-  display: block;
-  max-height: 240px;
-  object-fit: contain;
-  filter: brightness(0) invert(1) drop-shadow(0 0 22px color-mix(in srgb, var(--accent) 45%, transparent));
-}
-
-.track-map-image[hidden],
-.track-map-vector[hidden] {
-  display: none;
 }
 
 #track-path-shadow {
