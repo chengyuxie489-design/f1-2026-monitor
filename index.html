@@ -11,7 +11,82 @@
     <link rel="stylesheet" href="./calendar.css" />
   </head>
   <body>
-    <header class="topbar">
+    <section class="landing-hero" aria-label="Formula1-2026 homepage">
+      <nav class="landing-nav" aria-label="Homepage navigation">
+        <a class="landing-brand" href="#monitor" aria-label="Formula1-2026">
+          <span>F1</span>
+          <strong>Formula1-2026</strong>
+        </a>
+        <div class="landing-links" aria-label="Primary">
+          <a href="#monitor">Live Monitor</a>
+          <a href="#monitor">Race Data</a>
+          <a href="#monitor">Drivers</a>
+          <a href="#monitor">Teams</a>
+          <a href="#monitor">Calendar</a>
+        </div>
+        <a class="landing-search" href="#monitor" aria-label="Search race monitor">
+          <span></span>
+          <strong>Search</strong>
+        </a>
+      </nav>
+
+      <div class="landing-strip" aria-label="Season status">
+        <span>2026.03</span>
+        <strong>Formula1-2026</strong>
+        <span>2026.12</span>
+        <em>Live Data Grid</em>
+      </div>
+
+      <div class="landing-stage">
+        <div class="speed-field" aria-hidden="true"></div>
+        <div class="glass-fragment fragment-a" aria-hidden="true"></div>
+        <div class="glass-fragment fragment-b" aria-hidden="true"></div>
+        <div class="glass-fragment fragment-c" aria-hidden="true"></div>
+
+        <div class="driver-wall" aria-label="2026 featured drivers">
+          <figure class="driver-card driver-hamilton">
+            <img src="https://media.formula1.com/image/upload/c_fill%2Cw_720/q_auto/v1740000001/common/f1/2026/ferrari/lewham01/2026ferrarilewham01right.webp" alt="Lewis Hamilton Ferrari 2026" />
+            <figcaption>
+              <span>Ferrari</span>
+              <strong>Lewis Hamilton</strong>
+            </figcaption>
+          </figure>
+          <figure class="driver-card driver-verstappen">
+            <img src="https://media.formula1.com/image/upload/c_fill%2Cw_720/q_auto/v1740000001/common/f1/2026/redbullracing/maxver01/2026redbullracingmaxver01right.webp" alt="Max Verstappen Red Bull Racing 2026" />
+            <figcaption>
+              <span>Red Bull Racing</span>
+              <strong>Max Verstappen</strong>
+            </figcaption>
+          </figure>
+          <figure class="driver-card driver-norris">
+            <img src="https://media.formula1.com/image/upload/c_fill%2Cw_720/q_auto/v1740000001/common/f1/2026/mclaren/lannor01/2026mclarenlannor01right.webp" alt="Lando Norris McLaren 2026" />
+            <figcaption>
+              <span>McLaren</span>
+              <strong>Lando Norris</strong>
+            </figcaption>
+          </figure>
+          <figure class="driver-card driver-russell">
+            <img src="https://media.formula1.com/image/upload/c_fill%2Cw_720/q_auto/v1740000001/common/f1/2026/mercedes/georus01/2026mercedesgeorus01right.webp" alt="George Russell Mercedes 2026" />
+            <figcaption>
+              <span>Mercedes</span>
+              <strong>George Russell</strong>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="landing-copy">
+          <p>2026 FIA Formula One World Championship</p>
+          <h1>Formula1-2026</h1>
+          <span>Speed telemetry, standings, race maps and calendar intelligence in one live cockpit.</span>
+          <div class="landing-actions">
+            <a class="landing-button primary" href="#monitor">Enter Monitor</a>
+            <a class="landing-button secondary" href="#monitor">View Calendar</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <header class="topbar" id="monitor">
       <div class="brand-lockup">
         <div class="brand-mark" aria-hidden="true">F1</div>
         <div>
