@@ -288,41 +288,72 @@ html {
 
 .driver-card {
   position: absolute;
-  bottom: 0;
-  display: grid;
-  justify-items: center;
-  width: 25vw;
-  min-width: 250px;
-  max-width: 390px;
+  bottom: 28px;
+  width: clamp(340px, 35vw, 560px);
+  height: min(78vh, 660px);
+  overflow: hidden;
   margin: 0;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 255, 255, 0.18), transparent 32%),
+    linear-gradient(135deg, color-mix(in srgb, currentColor 28%, transparent), transparent 48%),
+    rgba(255, 255, 255, 0.025);
+  box-shadow: 0 38px 90px rgba(0, 0, 0, 0.56);
+  transform: skew(-8deg);
+  --driver-shift-x: -50%;
+  --driver-shift-y: 0;
+  --driver-scale: 1;
+  --driver-top: -58px;
+  --driver-height: clamp(1080px, 170vh, 1360px);
+}
+
+.driver-card::before,
+.driver-card::after {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  content: "";
+}
+
+.driver-card::before {
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background:
+    linear-gradient(92deg, transparent 0 42%, rgba(255, 255, 255, 0.18) 42.5% 43%, transparent 43.6%),
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.12) 0 1px, transparent 1px 4px);
+  mix-blend-mode: screen;
+  opacity: 0.42;
+}
+
+.driver-card::after {
+  background:
+    linear-gradient(180deg, transparent 58%, rgba(0, 0, 0, 0.9)),
+    linear-gradient(110deg, rgba(255, 255, 255, 0.11), transparent 30% 70%, rgba(255, 255, 255, 0.08));
 }
 
 .driver-card img {
-  width: 100%;
-  height: min(76vh, 770px);
+  position: absolute;
+  left: 50%;
+  top: var(--driver-top);
+  z-index: 1;
+  width: auto;
+  max-width: none;
+  height: var(--driver-height);
   object-fit: contain;
-  object-position: bottom center;
+  object-position: top center;
   filter: drop-shadow(0 24px 34px rgba(0, 0, 0, 0.8));
+  transform: translate(var(--driver-shift-x), var(--driver-shift-y)) scale(var(--driver-scale)) skew(8deg);
+  transform-origin: top center;
 }
 
 .driver-card figcaption {
-  position: absolute;
-  left: 50%;
-  bottom: 38px;
-  min-width: 186px;
-  padding: 8px 12px;
-  border-left: 3px solid currentColor;
-  color: #fff;
-  text-transform: uppercase;
-  transform: translateX(-50%) skew(-10deg);
-  background: rgba(5, 6, 9, 0.72);
-  backdrop-filter: blur(8px);
+  display: none;
 }
 
 .driver-card figcaption span,
 .driver-card figcaption strong {
   display: block;
-  transform: skew(10deg);
+  transform: skew(8deg);
 }
 
 .driver-card figcaption span {
@@ -337,8 +368,17 @@ html {
 }
 
 .driver-hamilton {
-  left: 7%;
-  z-index: 2;
+  left: 5%;
+  bottom: 2px;
+  z-index: 4;
+  width: clamp(360px, 34vw, 545px);
+  height: min(82vh, 680px);
+  color: var(--landing-red);
+  clip-path: polygon(0 7%, 100% 0, 84% 100%, 0 94%);
+  --driver-shift-x: -51%;
+  --driver-shift-y: -4px;
+  --driver-scale: 1.08;
+  --driver-top: -20px;
 }
 
 .driver-hamilton figcaption {
@@ -346,8 +386,17 @@ html {
 }
 
 .driver-verstappen {
-  left: 28%;
-  z-index: 3;
+  left: 24%;
+  bottom: 42px;
+  z-index: 5;
+  width: clamp(370px, 35vw, 570px);
+  height: min(84vh, 700px);
+  color: #2f7cff;
+  clip-path: polygon(8% 0, 100% 6%, 90% 100%, 0 100%);
+  --driver-shift-x: -49%;
+  --driver-shift-y: -8px;
+  --driver-scale: 1.1;
+  --driver-top: 32px;
 }
 
 .driver-verstappen figcaption {
@@ -355,8 +404,17 @@ html {
 }
 
 .driver-norris {
-  right: 27%;
-  z-index: 4;
+  right: 22%;
+  bottom: 24px;
+  z-index: 6;
+  width: clamp(370px, 35vw, 570px);
+  height: min(83vh, 690px);
+  color: var(--landing-orange);
+  clip-path: polygon(0 5%, 92% 0, 100% 95%, 7% 100%);
+  --driver-shift-x: -51%;
+  --driver-shift-y: -10px;
+  --driver-scale: 1.12;
+  --driver-top: 20px;
 }
 
 .driver-norris figcaption {
@@ -364,8 +422,17 @@ html {
 }
 
 .driver-russell {
-  right: 7%;
-  z-index: 2;
+  right: 4%;
+  bottom: -2px;
+  z-index: 4;
+  width: clamp(350px, 33vw, 535px);
+  height: min(81vh, 670px);
+  color: var(--landing-cyan);
+  clip-path: polygon(14% 0, 100% 9%, 90% 100%, 0 91%);
+  --driver-shift-x: -50%;
+  --driver-shift-y: -2px;
+  --driver-scale: 1.06;
+  --driver-top: -18px;
 }
 
 .driver-russell figcaption {
@@ -376,7 +443,7 @@ html {
   position: absolute;
   left: 50%;
   bottom: 82px;
-  z-index: 5;
+  z-index: 8;
   display: grid;
   justify-items: center;
   width: min(92%, 940px);
@@ -1467,23 +1534,24 @@ tbody tr:hover {
   }
 
   .driver-card {
-    min-width: 210px;
+    width: clamp(310px, 39vw, 500px);
+    height: min(72vh, 590px);
   }
 
   .driver-hamilton {
-    left: 1%;
+    left: -5%;
   }
 
   .driver-verstappen {
-    left: 25%;
+    left: 16%;
   }
 
   .driver-norris {
-    right: 24%;
+    right: 16%;
   }
 
   .driver-russell {
-    right: 1%;
+    right: -5%;
   }
 
   .landing-copy h1 {
@@ -1520,16 +1588,17 @@ tbody tr:hover {
   }
 
   .driver-card {
-    width: 28vw;
-    min-width: 190px;
+    width: clamp(290px, 42vw, 430px);
+    min-width: 0;
+    height: 570px;
   }
 
   .driver-card img {
-    height: 610px;
+    height: 1030px;
   }
 
   .driver-card figcaption {
-    bottom: 112px;
+    bottom: 44px;
     min-width: 160px;
   }
 
@@ -1650,33 +1719,69 @@ tbody tr:hover {
 
   .driver-wall {
     position: relative;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0;
-    height: 380px;
+    display: block;
+    height: 400px;
     margin: 0;
     order: 1;
   }
 
   .driver-card {
-    position: relative;
-    left: auto;
-    right: auto;
-    bottom: auto;
-    align-self: end;
-    width: auto;
+    position: absolute;
+    bottom: 0;
+    width: 50%;
+    height: 338px;
     min-width: 0;
     max-width: none;
+    transform: skew(-5deg);
+    --driver-top: 16px;
   }
 
   .driver-card img {
-    width: 100%;
-    height: 360px;
-    transform: none;
+    top: var(--driver-top);
+    height: 850px;
+    transform: translate(var(--driver-shift-x), var(--driver-shift-y)) scale(var(--driver-scale)) skew(5deg);
   }
 
   .driver-card figcaption {
     display: none;
+  }
+
+  .driver-hamilton {
+    left: -10%;
+    bottom: 0;
+    z-index: 3;
+    width: 55%;
+    height: 352px;
+    --driver-scale: 1.02;
+  }
+
+  .driver-verstappen {
+    left: 15%;
+    bottom: 42px;
+    z-index: 5;
+    width: 54%;
+    height: 352px;
+    --driver-scale: 1.02;
+    --driver-top: 18px;
+  }
+
+  .driver-norris {
+    right: 15%;
+    bottom: 22px;
+    z-index: 6;
+    width: 55%;
+    height: 352px;
+    --driver-scale: 1.04;
+    --driver-top: 18px;
+  }
+
+  .driver-russell {
+    right: -10%;
+    bottom: 0;
+    z-index: 4;
+    width: 54%;
+    height: 352px;
+    --driver-scale: 1.02;
   }
 
   .landing-copy {
