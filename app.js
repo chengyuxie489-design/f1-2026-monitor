@@ -240,7 +240,41 @@ const fallbackRaces = [
   }
 ];
 
-let races = fallbackRaces;
+const circuitTrackAssets = window.trackAssets || {};
+
+function trackAssetForRace(race) {
+  const circuit = String(race?.circuit || "").split(",")[0].trim();
+  const candidates = [race?.local?.kicker, circuit, race?.id].filter(Boolean);
+  return candidates.map((candidate) => circuitTrackAssets[candidate]).find(Boolean) || null;
+}
+
+function applyTrackAsset(race) {
+  const asset = trackAssetForRace(race);
+  if (!asset) {
+    return {
+      ...race,
+      trackViewBox: race.trackViewBox || "0 0 320 180"
+    };
+  }
+
+  return {
+    ...race,
+    track: asset.track || race.track,
+    start: asset.start || race.start,
+    trackViewBox: asset.trackViewBox || race.trackViewBox || "0 0 320 180",
+    trackMapUrl: asset.trackMapUrl || race.trackMapUrl,
+    local: {
+      ...race.local,
+      accent: asset.accent || race.local?.accent,
+      accent2: asset.accent2 || race.local?.accent2,
+      image: asset.image || race.local?.image,
+      trackMapUrl: asset.trackMapUrl || race.local?.trackMapUrl
+    }
+  };
+}
+
+let races = fallbackRaces.map(applyTrackAsset);
+let usingFallbackRaces = true;
 let activeRace = races[races.length - 1];
 let activeView = "race";
 let activeMode = "races";
@@ -261,6 +295,7 @@ const els = {
   raceName: document.querySelector("#race-name"),
   raceMeta: document.querySelector("#race-meta"),
   tagRow: document.querySelector("#tag-row"),
+  trackMap: document.querySelector("#track-map"),
   trackPath: document.querySelector("#track-path"),
   trackPathShadow: document.querySelector("#track-path-shadow"),
   trackStart: document.querySelector("#track-start"),
@@ -470,6 +505,7 @@ function renderRaceList() {
   els.raceList.innerHTML = races
     .map((race) => {
       const winner = race.race?.[0] || ["", "待确认", "", "", ""];
+      const trackViewBox = race.trackViewBox || "0 0 320 180";
       return `
         <button class="race-card ${race.id === activeRace.id ? "active" : ""}" type="button" data-race="${race.id}">
           <div class="race-card-main">
@@ -483,7 +519,7 @@ function renderRaceList() {
               <small>${safeText(winner[1])} · ${safeText(winner[4])}</small>
             </div>
           </div>
-          <svg class="race-card-track" viewBox="0 0 320 180" aria-hidden="true">
+          <svg class="race-card-track" viewBox="${safeText(trackViewBox)}" aria-hidden="true">
             <path d="${safeText(race.track)}"></path>
           </svg>
         </button>
@@ -560,10 +596,15 @@ function renderSummary() {
     `<span class="tag">${activeRace.circuit.split(",")[0]}</span>`
   ].join("");
 
+  const trackViewBox = activeRace.trackViewBox || "0 0 320 180";
+  const viewBoxNumbers = trackViewBox.split(/\s+/).map(Number);
+  const markerRadius = Math.max(viewBoxNumbers[2] || 320, viewBoxNumbers[3] || 180) * 0.018;
+  els.trackMap.setAttribute("viewBox", trackViewBox);
   els.trackPath.setAttribute("d", activeRace.track);
   els.trackPathShadow.setAttribute("d", activeRace.track);
   els.trackStart.setAttribute("cx", activeRace.start[0]);
   els.trackStart.setAttribute("cy", activeRace.start[1]);
+  els.trackStart.setAttribute("r", markerRadius);
 
   els.winner.textContent = podium[0][1];
   els.winnerTeam.textContent = podium[0][2];
@@ -761,7 +802,8 @@ async function loadLiveData() {
       throw new Error("invalid races payload");
     }
 
-    races = payload.races;
+    races = payload.races.map(applyTrackAsset);
+    usingFallbackRaces = false;
     standings = Array.isArray(payload.standings) ? payload.standings : [];
     constructorStandings = Array.isArray(payload.constructorStandings) ? payload.constructorStandings : [];
     activeRace = races.find((race) => race.id === selectedId) || races[races.length - 1];
@@ -772,7 +814,7 @@ async function loadLiveData() {
   } catch (error) {
     if (!standings.length) standings = buildFallbackStandings();
     if (!constructorStandings.length) constructorStandings = buildFallbackConstructorStandings();
-    if (races === fallbackRaces) {
+    if (usingFallbackRaces) {
       setDataStatus({
         source: "内置缓存",
         updatedAt: null

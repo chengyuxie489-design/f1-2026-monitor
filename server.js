@@ -11,6 +11,7 @@ const seedCacheFile = path.join(root, "races-live.json");
 const updateIntervalMs = Number(process.env.UPDATE_INTERVAL_MS || 120000);
 const openF1 = "https://api.openf1.org/v1";
 const apiCache = new Map();
+const { trackAssets } = require("./track-data.js");
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -193,35 +194,55 @@ async function fastestLaps(sessionKey, drivers) {
 }
 
 function profileFor(session) {
-  const profile = profiles[session.circuit_short_name] || [`${session.location} · 当地赛周`, "#f03638", "#31d0aa", "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80", "M44 98 C70 52 126 42 164 70 C195 93 228 54 268 78 C302 98 282 144 239 144 C193 144 180 120 144 142 C104 166 32 144 44 98", [44, 98]];
+  const baseProfile = profiles[session.circuit_short_name];
+  const fallbackProfile = [
+    `${session.location} · 当地赛周`,
+    "#f03638",
+    "#31d0aa",
+    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80",
+    "M44 98 C70 52 126 42 164 70 C195 93 228 54 268 78 C302 98 282 144 239 144 C193 144 180 120 144 142 C104 166 32 144 44 98",
+    [44, 98]
+  ];
+  const profile = baseProfile || fallbackProfile;
+  const asset = trackAssets[session.circuit_short_name] || {};
+
   return {
-    title: profile[0],
+    title: baseProfile?.[0] || asset.title || profile[0],
     kicker: session.circuit_short_name,
-    accent: profile[1],
-    accent2: profile[2],
-    image: profile[3],
-    track: profile[4],
-    start: profile[5],
-    trackMapUrl: profile[6] || "",
+    accent: asset.accent || profile[1],
+    accent2: asset.accent2 || profile[2],
+    image: asset.image || profile[3],
+    track: asset.track || profile[4],
+    start: asset.start || profile[5],
+    trackViewBox: asset.trackViewBox || "0 0 320 180",
+    trackMapUrl: asset.trackMapUrl || profile[6] || "",
     facts: [["数据状态", "实时同步", "比赛结果由 OpenF1 定时更新；网络波动时会保留最近一次可用快照。"]]
   };
 }
 
-function trackMapUrlForRace(race) {
-  const circuit = race?.local?.kicker || String(race?.circuit || "").split(",")[0].trim();
-  return profiles[circuit]?.[6] || "";
+function trackAssetForRace(race) {
+  const circuit = String(race?.circuit || "").split(",")[0].trim();
+  const candidates = [race?.local?.kicker, circuit, race?.id].filter(Boolean);
+  return candidates.map((candidate) => trackAssets[candidate]).find(Boolean) || null;
 }
 
-function enrichTrackMaps(races) {
+function enrichTrackVisuals(races) {
   return (races || []).map((race) => {
-    const trackMapUrl = race.trackMapUrl || race.local?.trackMapUrl || trackMapUrlForRace(race);
-    if (!trackMapUrl) return race;
+    const asset = trackAssetForRace(race);
+    if (!asset) return race;
+
     return {
       ...race,
-      trackMapUrl,
+      track: asset.track || race.track,
+      start: asset.start || race.start,
+      trackViewBox: asset.trackViewBox || race.trackViewBox || "0 0 320 180",
+      trackMapUrl: asset.trackMapUrl || race.trackMapUrl,
       local: {
         ...race.local,
-        trackMapUrl: race.local?.trackMapUrl || trackMapUrl
+        accent: asset.accent || race.local?.accent,
+        accent2: asset.accent2 || race.local?.accent2,
+        image: asset.image || race.local?.image,
+        trackMapUrl: asset.trackMapUrl || race.local?.trackMapUrl
       }
     };
   });
@@ -289,6 +310,7 @@ async function buildRace(session, index, sprintSessions) {
     local,
     track: local.track,
     start: local.start,
+    trackViewBox: local.trackViewBox,
     trackMapUrl: local.trackMapUrl,
     race: raceData.rows,
     fastest,
@@ -354,7 +376,7 @@ function usablePayload(payload) {
 
 function annotate(payload, metadata = {}) {
   const updatedTime = payload?.updatedAt ? new Date(payload.updatedAt).getTime() : NaN;
-  return { source: payload?.source || "OpenF1 warming", updatedAt: payload?.updatedAt || null, races: enrichTrackMaps(payload?.races), standings: payload?.standings || [], constructorStandings: payload?.constructorStandings || [], calendar: payload?.calendar || [], syncStatus: metadata.syncStatus || payload?.syncStatus || "live", stale: metadata.stale ?? payload?.stale ?? false, lastSyncError: metadata.lastSyncError ?? payload?.lastSyncError ?? null, nextUpdateAt, cacheAgeMs: Number.isFinite(updatedTime) ? Math.max(0, Date.now() - updatedTime) : null };
+  return { source: payload?.source || "OpenF1 warming", updatedAt: payload?.updatedAt || null, races: enrichTrackVisuals(payload?.races), standings: payload?.standings || [], constructorStandings: payload?.constructorStandings || [], calendar: payload?.calendar || [], syncStatus: metadata.syncStatus || payload?.syncStatus || "live", stale: metadata.stale ?? payload?.stale ?? false, lastSyncError: metadata.lastSyncError ?? payload?.lastSyncError ?? null, nextUpdateAt, cacheAgeMs: Number.isFinite(updatedTime) ? Math.max(0, Date.now() - updatedTime) : null };
 }
 
 async function readCacheFile(filePath) {
