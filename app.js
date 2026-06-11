@@ -581,8 +581,8 @@ function renderSummary() {
   const rate = Math.round((finishers / activeRace.race.length) * 100);
   const root = document.documentElement;
 
-  root.style.setProperty("--accent", activeRace.local.accent);
-  root.style.setProperty("--accent-2", activeRace.local.accent2);
+  root.style.setProperty("--race-accent", activeRace.local.accent);
+  root.style.setProperty("--race-accent-2", activeRace.local.accent2);
   root.style.setProperty("--race-image", `url("${activeRace.local.image}")`);
   root.style.setProperty("--local-image", `url("${activeRace.local.image}")`);
 

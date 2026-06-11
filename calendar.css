@@ -1,6 +1,6 @@
 body[data-mode="calendar"] {
-  --accent: #64d2ff;
-  --accent-2: #f1c75b;
+  --accent: #ff4b1f;
+  --accent-2: #00d8ff;
 }
 
 body[data-mode="calendar"] .dashboard {
@@ -91,14 +91,14 @@ body[data-mode="calendar"] #calendar-section {
 }
 
 .globe-label.completed {
-  border-color: color-mix(in srgb, var(--accent-2) 70%, transparent);
+  border-color: color-mix(in srgb, var(--gold) 70%, transparent);
   color: #fff6d4;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.32), 0 0 24px rgba(241, 199, 91, 0.28);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.32), 0 0 24px color-mix(in srgb, var(--gold) 28%, transparent);
 }
 
 .globe-label.completed span {
   color: #111;
-  background: var(--accent-2);
+  background: var(--gold);
   border-radius: 999px;
   padding: 1px 5px;
 }
@@ -163,8 +163,8 @@ body[data-mode="calendar"] #calendar-section {
 }
 
 .globe-legend .done {
-  background: var(--accent-2);
-  box-shadow: 0 0 16px rgba(241, 199, 91, 0.56);
+  background: var(--gold);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--gold) 56%, transparent);
 }
 
 .globe-legend .future {
@@ -202,9 +202,9 @@ body[data-mode="calendar"] #calendar-section {
 }
 
 .calendar-card.completed {
-  border-color: color-mix(in srgb, var(--accent-2) 58%, var(--line));
+  border-color: color-mix(in srgb, var(--gold) 58%, var(--line));
   background:
-    linear-gradient(120deg, rgba(241, 199, 91, 0.18), transparent 52%),
+    linear-gradient(120deg, color-mix(in srgb, var(--gold) 18%, transparent), transparent 52%),
     var(--surface-2);
 }
 
@@ -220,7 +220,7 @@ body[data-mode="calendar"] #calendar-section {
 }
 
 .calendar-card.completed span {
-  background: var(--accent-2);
+  background: var(--gold);
 }
 
 .calendar-card.cancelled {
