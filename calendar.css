@@ -32,7 +32,7 @@ body[data-mode="calendar"] #calendar-section {
     radial-gradient(circle at 62% 48%, rgba(100, 210, 255, 0.18), transparent 26%),
     radial-gradient(circle at 38% 42%, rgba(241, 199, 91, 0.12), transparent 24%),
     linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent 34%),
-    #10141d;
+    var(--panel-bg-strong);
   cursor: grab;
   touch-action: none;
 }
@@ -153,7 +153,7 @@ body[data-mode="calendar"] #calendar-section {
   border: 1px solid var(--line);
   border-radius: 999px;
   color: var(--text);
-  background: rgba(18, 22, 30, 0.72);
+  background: var(--panel-bg);
 }
 
 .globe-legend i {
@@ -197,7 +197,7 @@ body[data-mode="calendar"] #calendar-section {
   text-align: left;
   background:
     linear-gradient(120deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 48%),
-    #1d2028;
+    var(--surface-2);
   cursor: pointer;
 }
 
@@ -205,7 +205,7 @@ body[data-mode="calendar"] #calendar-section {
   border-color: color-mix(in srgb, var(--accent-2) 58%, var(--line));
   background:
     linear-gradient(120deg, rgba(241, 199, 91, 0.18), transparent 52%),
-    #22242d;
+    var(--surface-2);
 }
 
 .calendar-card span {
@@ -227,7 +227,7 @@ body[data-mode="calendar"] #calendar-section {
   border-color: rgba(143, 152, 170, 0.58);
   background:
     linear-gradient(120deg, rgba(143, 152, 170, 0.16), transparent 52%),
-    #20232b;
+    var(--surface-2);
 }
 
 .calendar-card.cancelled span {
