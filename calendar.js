@@ -31,6 +31,24 @@ let liveCompletedHints = new Set();
 let liveCalendarStatuses = new Map();
 let liveCalendarSynced = false;
 
+function calendarColor(name, fallback) {
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return value || fallback;
+}
+
+function calendarPalette() {
+  return {
+    earth: calendarColor("--text", "#f5f6f8"),
+    atmosphere: calendarColor("--state-live", "#00d8ff"),
+    grid: "#ffffff",
+    ambient: "#9fdcff",
+    rim: calendarColor("--brand-heat", "#ff4b1f"),
+    complete: calendarColor("--state-complete", "#f6b936"),
+    live: calendarColor("--state-live", "#00d8ff"),
+    cancelled: calendarColor("--state-cancelled", "#8f98aa")
+  };
+}
+
 function calendarSafe(value) {
   return String(value ?? "").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;",
@@ -128,26 +146,27 @@ function initGlobe() {
 
   const earthGroup = new THREE.Group();
   const markerGroup = new THREE.Group();
+  const palette = calendarPalette();
   scene.add(earthGroup, markerGroup);
 
   earthGroup.add(new THREE.Mesh(
     new THREE.SphereGeometry(2, 128, 128),
-    new THREE.MeshStandardMaterial({ map: loadEarthTexture(), color: "#f7fbff", roughness: 0.96, metalness: 0.02 })
+    new THREE.MeshStandardMaterial({ map: loadEarthTexture(), color: palette.earth, roughness: 0.96, metalness: 0.02 })
   ));
   earthGroup.add(new THREE.Mesh(
     new THREE.SphereGeometry(2.08, 96, 96),
-    new THREE.MeshBasicMaterial({ color: "#64d2ff", transparent: true, opacity: 0.12, side: THREE.BackSide })
+    new THREE.MeshBasicMaterial({ color: palette.atmosphere, transparent: true, opacity: 0.12, side: THREE.BackSide })
   ));
   earthGroup.add(new THREE.Mesh(
     new THREE.SphereGeometry(2.012, 48, 24),
-    new THREE.MeshBasicMaterial({ color: "#ffffff", wireframe: true, transparent: true, opacity: 0.038 })
+    new THREE.MeshBasicMaterial({ color: palette.grid, wireframe: true, transparent: true, opacity: 0.038 })
   ));
 
-  scene.add(new THREE.AmbientLight("#9fc7ff", 1.18));
-  const key = new THREE.DirectionalLight("#ffffff", 2.35);
+  scene.add(new THREE.AmbientLight(palette.ambient, 1.18));
+  const key = new THREE.DirectionalLight(palette.grid, 2.35);
   key.position.set(4, 3, 6);
   scene.add(key);
-  const rim = new THREE.DirectionalLight("#31d0aa", 1.2);
+  const rim = new THREE.DirectionalLight(palette.rim, 1.2);
   rim.position.set(-5, -1, -2);
   scene.add(rim);
 
@@ -193,10 +212,11 @@ function updateGlobeMarkers() {
   globeState.markerGroup.clear();
   globeState.labels.forEach((label) => label.element.remove());
   globeState.labels = [];
+  const palette = calendarPalette();
 
   calendarRows().forEach((race) => {
     const position = latLonToVector(race.lat, race.lon);
-    const color = race.cancelled ? "#8f98aa" : race.completed ? "#f1c75b" : "#64d2ff";
+    const color = race.cancelled ? palette.cancelled : race.completed ? palette.complete : palette.live;
     const marker = new THREE.Mesh(new THREE.SphereGeometry(race.completed ? 0.055 : 0.043, 18, 18), new THREE.MeshBasicMaterial({ color }));
     marker.position.copy(position);
     globeState.markerGroup.add(marker);
